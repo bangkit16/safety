@@ -143,15 +143,6 @@
                         <!-- Name role -->
                         <div class="">
                             <label for="tanda_tangan" class="col-form-label">Tanda Tangan: </label>
-
-                            {{-- @if (isset($data->tanda_tangan))
-                                <div class="mb-3">
-                                    <label>Preview Tanda Tangan:</label>
-                                    <img src="{{ asset('storage/' . $data->tanda_tangan) }}" alt="Tanda Tangan"
-                                        class="img-thumbnail" style="max-width: 200px;">
-                                </div>
-                            @endif --}}
-
                             <input type="file" name="tanda_tangan" id="tanda_tangan"
                                 class="form-control{{ $errors->has('tanda_tangan') ? ' is-invalid' : '' }}"
                                 placeholder="Unggah file tanda tangan dalam format jpg/png/jpeg (maks. 2MB)">

@@ -50,7 +50,7 @@
                 </div>
             </li>
             <li>
-                <a data-toggle="collapse" href="#example"
+                <a data-toggle="collapse" href="#patrol"
                     aria-expanded="{{ in_array($pageSlug, ['input-patrol', 'input-perbaikan', 'laporan']) ? 'true' : 'false' }}"
                     class="{{ in_array($pageSlug, ['input-patrol', 'input-perbaikan', 'laporan']) ? '' : 'collapsed' }}">
                     <i class="fas fa-users-cog"></i> <!-- Ikon User Configurasi -->
@@ -58,26 +58,26 @@
                     <b class="caret mt-1"></b>
                 </a>
                 <div class="collapse {{ in_array($pageSlug, ['input-patrol', 'input-perbaikan', 'laporan']) ? 'show' : '' }}"
-                    id="example">
+                    id="patrol">
                     <ul class="nav pl-4">
                         <li @if ($pageSlug == 'input-patrol') class="active " @endif>
-                            <a href="{{ route('profile.edit') }}">
+                            <a href="{{ route('patrol.index') }}">
                                 <i class="fas fa-user"></i> <!-- Ikon User Profile -->
-                                <p>{{ 'User Profile' }}</p>
+                                <p>{{ 'Input Patrol' }}</p>
                             </a>
                         </li>
                         <li @if ($pageSlug == 'input-perbaikan') class="active " @endif>
-                            <a href="{{ route('user.index') }}">
+                            <a href="{{ route('perbaikan.index') }}">
                                 <i class="fas fa-users"></i> <!-- Ikon User Management -->
-                                <p>{{ 'User Management' }}</p>
+                                <p>{{ 'Input Perbaikan' }}</p>
                             </a>
                         </li>
-                        <li @if ($pageSlug == 'laporan') class="active " @endif>
-                            <a href="{{ route('role.index') }}">
+                        {{-- <li @if ($pageSlug == 'laporan') class="active " @endif>
+                            <a href="{{ route('laporan.index') }}">
                                 <i class="fas fa-user-tag"></i> <!-- Ikon Role Management -->
-                                <p>{{ 'Role Management' }}</p>
+                                <p>{{ 'Laporan Patrol' }}</p>
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
             </li>

@@ -1,4 +1,4 @@
-@extends('admin.layouts.app', ['page' => 'User Management', 'pageSlug' => 'users'])
+@extends('admin.layouts.app', ['page' => 'Input Patrol', 'pageSlug' => 'input-patrol'])
 
 @section('content')
     <div class="row">
@@ -7,12 +7,12 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-8">
-                            <h4 class="card-title">Patrol Keselamatan</h4>
+                            <h4 class="card-title">Patroli Keselamatan</h4>
                         </div>
                         <div class="col-4 text-right">
                             <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
-                                data-bs-target="#adduser">
-                                Add Patrol
+                                data-bs-target="#addpatrol">
+                                Add Patroli
                             </button>
                         </div>
                     </div>
@@ -24,7 +24,7 @@
                         <form method="GET" action="{{ route('patrol.index') }}" class="d-flex w-100">
                             <div class="form-group flex-grow-1 me-2">
                                 <input type="text" name="search" class="form-control form-control-sm mt-1"
-                                    placeholder="Search by tanggal, divisi, user, or status"
+                                    placeholder="Search by tanggal, divisi, user, temuan or status"
                                     value="{{ request()->get('search') }}">
                             </div>
                             <div class="form-group">
@@ -37,15 +37,7 @@
                         <table class="table table-responsive-xl" style="width: 100%" id="">
                             <thead class="text-primary ">
                                 <tr>
-                                    <th scope="col">
-                                        <span style="cursor: pointer;"
-                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'tanggal', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
-                                            Tanggal Pembuatan
-                                            @if ($sortBy === 'tanggal')
-                                                {{ $order === 'asc' ? '🔼' : '🔽' }}
-                                            @endif
-                                        </span>
-                                    </th>
+                                    <th scope="col" colspan="2" class="text-center">Temuan Patroli</th>
                                     <th scope="col">
                                         <span style="cursor: pointer;"
                                             onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'divisi_id', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
@@ -64,32 +56,53 @@
                                             @endif
                                         </span>
                                     </th>
-                                    <th scope="col" colspan="2">Temuan Patroli</th>
-                                    <th scope="col">Rekomendasi Perbaikan</th>
-                                    <th scope="col">Status</th>
+                                    <th scope="col">
+                                        <span style="cursor: pointer;"
+                                            onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'tanggal', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
+                                            Tanggal Pembuatan
+                                            @if ($sortBy === 'tanggal')
+                                                {{ $order === 'asc' ? '🔼' : '🔽' }}
+                                            @endif
+                                        </span>
+                                    </th>
+                                    <th scope="col" class="text-center">Status</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($data as $d)
                                     <tr>
-                                        <td>{{ $d->tanggal }}</td>
+                                        <td>{{ $d->temuan }}</td>
+                                        <td> <img src="{{ asset('storage/' . $d->dokumentasi) }}"
+                                                alt="{{ $d->dokumentasi }}" class="img-fluid" style="max-width: 200px">
+                                        </td>
                                         <td>
                                             @foreach ($divisi as $p)
-                                                @if ($p->divisi_id === $d->divisi_id)
+                                                @if ($p->divisi_id == $d->divisi_id)
                                                     {{ $p->nama }}
                                                 @endif
                                             @endforeach
                                         </td>
                                         <td>
                                             @foreach ($user as $p)
-                                                @if ($p->user_id === $d->user_id)
+                                                @if ($p->user_id == $d->user_id)
                                                     {{ $p->name }}
                                                 @endif
                                             @endforeach
                                         </td>
-                                        <td>{{$d->temuan}}</td>
-                                        <td>{{ $d->created_at }}</td>
+                                        <td>{{ $d->tanggal }}</td>
+                                        <td>
+                                            @switch($d->status)
+                                                @case('Belum Dicek')
+                                                    <div class="rounded bg-danger text-center p-1 fw-bolder" style="color: white">
+                                                        {{ $d->status }}</div>
+                                                @break
+
+                                                @default
+                                                    <div class="rounded bg-success text-center p-1 fw-bolder" style="color: white">
+                                                        {{ $d->status }}</div>
+                                            @endswitch
+                                        </td>
                                         <td class="text-right">
                                             <div class="dropdown">
                                                 <a class="btn btn-sm btn-icon-only text-light" href="#" role="button"
@@ -98,195 +111,217 @@
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
                                                     <a class="dropdown-item edit-button" data-bs-toggle="modal"
-                                                        data-bs-target="#editUser" data-id="{{ $d->user_id }}"
-                                                        data-name="{{ $d->name }}" data-email="{{ $d->email }}"
-                                                        data-role="{{ $d->role_id }}"
-                                                        data-url="{{ url('user/' . $d->user_id) }}">Edit</a>
+                                                        data-bs-target="#editpatrol" data-id="{{ $d->patrol_id }}"
+                                                        data-divisi-id="{{ $d->divisi_id }}"
+                                                        data-temuan="{{ $d->temuan }}"
+                                                        data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
+                                                        data-url="{{ url('patrol/' . $d->patrol_id) }}">Edit</a>
                                                     <a class="dropdown-item delete-button" data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal" data-id="{{ $d->user_id }}"
-                                                        data-url="{{ url('user/' . $d->user_id) }}">Delete</a>
+                                                        data-bs-target="#deleteModal" data-id="{{ $d->patrol_id }}"
+                                                        data-url="{{ url('patrol/' . $d->patrol_id) }}">Delete</a>
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center">Tidak ada user yang ditemukan</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="text-center">Tidak ada data yang ditemukan</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer ">
+                        <nav class="d-flex justify-content-between align-items-center" aria-label="...">
+                            <div class="form-group">
+                                <select id="paginationLimit" class="form-control" onchange="updatePaginationLimit(this.value)"
+                                    style="font-size: 12px">
+                                    <option value="10" {{ request('limit') == 10 ? 'selected' : '' }}>10</option>
+                                    <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25</option>
+                                    <option value="50" {{ request('limit') == 50 ? 'selected' : '' }}>50</option>
+                                    <option value="all" {{ request('limit') == 'all' ? 'selected' : '' }}>All</option>
+                                </select>
+                            </div>
+
+                            {{-- Tampilkan pagination hanya jika tidak memilih 'all' --}}
+                            @if ($data instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                                {{ $data->links('vendor.pagination.bootstrap-5') }}
+                            @endif
+                        </nav>
                     </div>
                 </div>
-                <div class="card-footer ">
-                    <nav class="d-flex justify-content-between align-items-center" aria-label="...">
-                        <div class="form-group">
-                            <select id="paginationLimit" class="form-control" onchange="updatePaginationLimit(this.value)"
-                                style="font-size: 12px">
-                                <option value="10" {{ request('limit') == 10 ? 'selected' : '' }}>10</option>
-                                <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25</option>
-                                <option value="50" {{ request('limit') == 50 ? 'selected' : '' }}>50</option>
-                                <option value="all" {{ request('limit') == 'all' ? 'selected' : '' }}>All</option>
-                            </select>
-                        </div>
+            </div>
+        </div>
 
-                        {{-- Tampilkan pagination hanya jika tidak memilih 'all' --}}
-                        @if ($data instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                            {{ $data->links('vendor.pagination.bootstrap-5') }}
-                        @endif
-                    </nav>
+        <!-- Modal Add User -->
+        <div class="modal fade" id="addpatrol" tabindex="-1" aria-labelledby="addpatrolTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Patroli</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" method="POST" action="{{ route('patrol.store') }}"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <!-- Name role -->
+                            <div class="">
+                                <label for="temuan" class="col-form-label">Temuan Patroli:
+                                </label>
+                                <textarea name="temuan" id="temuan"
+                                    class="form-control{{ $errors->has('temuan') ? ' is-invalid' : '' }}" 
+                                    placeholder="Description Feedback">{{ old('temuan') }}</textarea>
+                                @if ($errors->has('temuan'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('temuan') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="">
+                                <label for="dokumentasi" class="col-form-label">Temuan Dokumentasi: </label>
+                                <input type="file" name="dokumentasi" id="dokumentasi"
+                                    class="form-control{{ $errors->has('dokumentasi') ? ' is-invalid' : '' }}"
+                                    placeholder="Unggah file dalam format jpg/png/jpeg (maks. 2MB)">
+                                @if ($errors->has('dokumentasi'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('dokumentasi') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- Role User -->
+                            <div class="form-group">
+                                <label for="divisi_id" class="col-form-label">Name Divisi_id:</label>
+                                <select name="divisi_id" id="divisi_id"
+                                    class="form-control{{ $errors->has('divisi_id') ? ' is-invalid' : '' }}"
+                                    style="height: 50px">
+                                    <option value="">- Select Role -</option>
+                                    @foreach ($divisi as $r)
+                                        <option value="{{ $r->divisi_id }}"
+                                            {{ old('divisi_id') == $r->divisi_id ? 'selected' : '' }}>
+                                            {{ $r->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('divisi_id'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('divisi_id') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- Description feedback -->
+                            {{-- <div class="">
+                                <label for="perbaikan" class="col-form-label">Perbaikan Temuan: </label>
+                                <textarea type="text" name="perbaikan" id="perbaikan"
+                                    class="form-control{{ $errors->has('perbaikan') ? ' is-invalid' : '' }}" placeholder="Description Feedback">{{ old('perbaikan') }}</textarea>
+                                @if ($errors->has('perbaikan'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('perbaikan') }}
+                                    </span>
+                                @endif
+                            </div> --}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Patroli</button>
+                    </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Modal Add User -->
-    <div class="modal fade" id="adduser" tabindex="-1" aria-labelledby="adduserTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Modal Edit User -->
+        <div class="modal fade" id="editpatrol" tabindex="-1" aria-labelledby="editpatrolTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editpatrolTitle">Edit Patroli</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" method="POST" action="" id="editpatrolForm"
+                            enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+
+                            <!-- Description Feedback -->
+                            <div class="">
+                                <label for="edit-temuan" class="col-form-label">Temuan Patroli:
+                                </label>
+                                <textarea name="edit_temuan" id="edit-temuan"
+                                    class="form-control{{ $errors->has('edit_temuan') ? ' is-invalid' : '' }}" 
+                                    placeholder="Description Feedback">{{ old('edit_temuan') }}</textarea>
+                                @if ($errors->has('edit_temuan'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('edit_temuan') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- Name User -->
+                            <div class="">
+                                <label for="edit-dokumentasi" class="col-form-label">Dokumentasi Temuan: </label>
+                                <input type="file" name="edit_dokumentasi" id="edit-dokumentasi"
+                                    class="form-control{{ $errors->has('edit_dokumentasi') ? ' is-invalid' : '' }}"
+                                    placeholder="Project Image" value="{{ old('edit_dokumentasi') }}">
+                                <img id="current-icon" src="" alt="Current Icon"
+                                    style="max-width: 100px; margin-top: 10px; display: none;">
+                                @if ($errors->has('edit_dokumentasi'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('edit_dokumentasi') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- Role User -->
+                            <div class="form-group{{ $errors->has('edit_divisi_id') ? ' has-danger' : '' }}">
+                                <label for="edit-divisi-id" class="col-form-label">Name Divisi: </label>
+                                <select name="edit_divisi_id"
+                                    class="form-control {{ $errors->has('edit_divisi_id') ? ' is-invalid' : '' }}"
+                                    id="edit-divisi-id" style="height: 50px">
+                                    <option value="">- Role -</option>
+                                    @foreach ($divisi as $p)
+                                        <option value="{{ $p->divisi_id }}"
+                                            {{ old('edit_divisi_id') == $p->divisi_id ? 'selected' : '' }}>
+                                            {{ $p->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('edit_divisi_id'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('edit_divisi_id') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- Description Feedback -->
+                            {{-- <div class="">
+                                <label for="edit-perbaikan" class="col-form-label">Perbaikan Patrol:
+                                </label>
+                                <textarea  name="edit_perbaikan" id="edit-perbaikan"
+                                    class="form-control{{ $errors->has('edit_perbaikan') ? ' is-invalid' : '' }}" placeholder="Description Feedback">{{ old('edit_perbaikan') }}</textarea>
+                                @if ($errors->has('edit_perbaikan'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('edit_perbaikan') }}
+                                    </span>
+                                @endif
+                            </div> --}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="text-white btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="text-white btn btn-primary">Update Patroli</button>
+                    </div>
+                    </form>
                 </div>
-                <div class="modal-body">
-                    <form role="form" method="POST" action="{{ route('user.store') }}"
-                        enctype="multipart/form-data">
-                        @csrf
-
-                        <!-- Name User -->
-                        <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                            <label for="name" class="col-form-label">Name User:</label>
-                            <input type="text" name="name" id="name"
-                                class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}"
-                                placeholder="Name User" value="{{ old('name') }}">
-                            @if ($errors->has('name'))
-                                <span class="invalid-feedback" role="alert">
-                                    {{ $errors->first('name') }}
-                                </span>
-                            @endif
-                        </div>
-
-                        <!-- Email -->
-                        <div class="form-group{{ $errors->has('email') ? ' has-danger' : '' }}">
-                            <label for="email" class="col-form-label">Email User:</label>
-                            <input type="email" name="email" id="email"
-                                class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="Email"
-                                value="{{ old('email') }}">
-                            @if ($errors->has('email'))
-                                <span class="invalid-feedback" role="alert">
-                                    {{ $errors->first('email') }}
-                                </span>
-                            @endif
-                        </div>
-
-                        <!-- Password -->
-                        <div class="form-group{{ $errors->has('password') ? ' has-danger' : '' }}">
-                            <label for="password" class="col-form-label">Password:</label>
-                            <input type="password" name="password" id="password"
-                                class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}"
-                                placeholder="Password">
-                            @if ($errors->has('password'))
-                                <span class="invalid-feedback" role="alert">
-                                    {{ $errors->first('password') }}
-                                </span>
-                            @endif
-                        </div>
-
-                        <!-- Confirm Password -->
-                        <div class="form-group">
-                            <label for="password_confirmation" class="col-form-label">Confirm Password:</label>
-                            <input type="password" name="password_confirmation" id="password_confirmation"
-                                class="form-control" placeholder="Confirm Password">
-                        </div>
-
-                        <!-- Role User -->
-                        <div class="form-group{{ $errors->has('role_id') ? ' has-danger' : '' }}">
-                            <label for="role_id" class="col-form-label">Name Role:</label>
-                            <select name="role_id" id="role_id"
-                                class="form-control{{ $errors->has('role_id') ? ' is-invalid' : '' }}"
-                                style="height: 50px">
-                                <option value="">- Select Role -</option>
-                                @foreach ($role as $r)
-                                    <option value="{{ $r->role_id }}"
-                                        {{ old('role_id') == $r->role_id ? 'selected' : '' }}>
-                                        {{ $r->role_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @if ($errors->has('role_id'))
-                                <span class="invalid-feedback" role="alert">
-                                    {{ $errors->first('role_id') }}
-                                </span>
-                            @endif
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Add User</button>
-                </div>
-                </form>
             </div>
         </div>
-    </div>
 
-    <!-- Modal Edit User -->
-    <div class="modal fade" id="editUser" tabindex="-1" aria-labelledby="editUserTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editUserTitle">Edit User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form role="form" method="POST" action="" id="editUserForm" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-
-                        <!-- Name User -->
-                        <div class="form-group{{ $errors->has('edit_name') ? ' has-danger' : '' }}">
-                            <label for="edit-name" class="col-form-label">Name User: </label>
-                            <input type="text" name="edit_name" id="edit-name"
-                                class="form-control{{ $errors->has('edit_name') ? ' is-invalid' : '' }}"
-                                placeholder="Name" value="{{ old('edit_name') }}">
-                            @if ($errors->has('edit_name'))
-                                <span class="invalid-feedback" role="alert">
-                                    {{ $errors->first('edit_name') }}
-                                </span>
-                            @endif
-                        </div>
-
-                        <!-- Role User -->
-                        <div class="form-group{{ $errors->has('edit_role_id') ? ' has-danger' : '' }}">
-                            <label for="edit-role-id" class="col-form-label">Name Role: </label>
-                            <select name="edit_role_id"
-                                class="form-control {{ $errors->has('edit_role_id') ? ' is-invalid' : '' }}"
-                                id="edit-role-id" style="height: 50px">
-                                <option value="">- Role -</option>
-                                @foreach ($role as $p)
-                                    <option value="{{ $p->role_id }}"
-                                        {{ old('edit_role_id') == $p->role_id ? 'selected' : '' }}>
-                                        {{ $p->role_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @if ($errors->has('edit_role_id'))
-                                <span class="invalid-feedback" role="alert">
-                                    {{ $errors->first('edit_role_id') }}
-                                </span>
-                            @endif
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="text-white btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="text-white btn btn-primary">Update Role</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Delete User -->
-    <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        <!-- Modal Delete User -->
+        <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -295,11 +330,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure to delete data User?
+                    Are you sure to delete data?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <form id="deleteUserForm" method="POST">
+                    <form id="deletepatrolForm" method="POST">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-primary">Delete</button>
@@ -308,72 +343,84 @@
             </div>
         </div>
     </div>
-@endsection
+    @endsection
 
-@stack('js')
-<script>
-    function updatePaginationLimit(limit) {
-        const url = new URL(window.location.href);
-        url.searchParams.set('limit', limit); // Tambahkan atau update parameter 'limit'
-        window.location.href = url.toString(); // Redirect ke URL baru
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Check and show the editlayanan modal if there are errors for edit layanan
-        if (
-            {{ $errors->has('name') || $errors->has('email') || $errors->has('password') || $errors->has('role_id') ? 'true' : 'false' }}
-        ) {
-            var adduserModal = new bootstrap.Modal(document.getElementById('adduser'));
-            adduserModal.show();
+    @stack('js')
+    <script>
+        function updatePaginationLimit(limit) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('limit', limit); // Tambahkan atau update parameter 'limit'
+            window.location.href = url.toString(); // Redirect ke URL baru
         }
-        if (
-            {{ $errors->has('edit_user_name') || $errors->has('edit_role_id') ? 'true' : 'false' }}
-        ) {
-            var edituserModal = new bootstrap.Modal(document.getElementById('editUser'));
-            var url = localStorage.getItem('Url');
-            edituserModal.show();
-            $('#editUserForm').attr('action', url);
 
-            console.log(@json($errors->all()));
-        }
-    });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check and show the editlayanan modal if there are errors for edit layanan
+            if (
+                {{ $errors->has('temuan') || $errors->has('dokumentasi') || $errors->has('divisi_id') ? 'true' : 'false' }}
+            ) {
+                var addpatrolModal = new bootstrap.Modal(document.getElementById('addpatrol'));
+                addpatrolModal.show();
+                console.log(@json($errors->all()));
+            }
+            if (
+                {{ $errors->has('edit_temuan') || $errors->has('edit_dokumentasi') || $errors->has('edit_divisi_id') ? 'true' : 'false' }}
+            ) {
+                var editpatrolModal = new bootstrap.Modal(document.getElementById('editpatrol'));
+                var url = localStorage.getItem('Url');
+                editpatrolModal.show();
+                $('#editpatrolForm').attr('action', url);
+
+                console.log(@json($errors->all()));
+            }
+        });
 
 
-    document.addEventListener('DOMContentLoaded', function() {
-        var editButtons = document.querySelectorAll('.edit-button');
+        document.addEventListener('DOMContentLoaded', function() {
+            var editButtons = document.querySelectorAll('.edit-button');
 
-        editButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                var userId = this.getAttribute('data-id');
-                var userName = this.getAttribute('data-name');
-                var userRole = this.getAttribute('data-role');
-                var actionUrl = this.getAttribute('data-url');
-                localStorage.setItem('Url', actionUrl);
+            editButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var patrolId = this.getAttribute('data-id');
+                    var patrolName = this.getAttribute('data-temuan');
+                    var patrolDokum = this.getAttribute('data-dokumentasi');
+                    var patrolDivisi = this.getAttribute('data-divisi-id');
+                    var actionUrl = this.getAttribute('data-url');
+                    localStorage.setItem('Url', actionUrl);
+                    localStorage.setItem('Image', patrolDokum);
 
-                console.log(actionUrl);
+                    console.log(patrolId, patrolName, patrolDokum, patrolDivisi, actionUrl);
 
-                $('#edit-id').val(userId);
-                $('#edit-name').val(userName);
-                $('#edit-role-id').val(userRole);
+                    // $('#edit-patrol-id').val(patrolId);
+                    $('#edit-temuan').val(patrolName);
+                    $('#edit-divisi-id').val(patrolDivisi);
 
-                // Atur action form untuk update
-                $('#editUserForm').attr('action', actionUrl);
+                    // Update gambar ikon jika ada
+                    var iconImage = $('#current-icon');
+                    if (patrolDokum) {
+                        iconImage.attr('src', patrolDokum); // Menggabungkan string dengan benar
+                        iconImage.show(); // Menampilkan gambar jika ada
+                    } else {
+                        iconImage.hide(); // Menyembunyikan gambar jika tidak ada
+                    }
+
+                    // Atur action form untuk update
+                    $('#editpatrolForm').attr('action', actionUrl);
+                });
             });
         });
-    });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Ketika tombol delete diklik
-        document.querySelectorAll('.delete-button').forEach(function(button) {
-            button.addEventListener('click', function() {
-                // Ambil data dari atribut data-*
-                var userId = this.getAttribute('data-id');
-                var userDeleteUrl = this.getAttribute('data-url');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ketika tombol delete diklik
+            document.querySelectorAll('.delete-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // Ambil data dari atribut data-*
+                    var userId = this.getAttribute('data-id');
+                    var userDeleteUrl = this.getAttribute('data-url');
 
-                // Atur action form untuk delete
-                document.getElementById('deleteUserForm').setAttribute('action',
-                    userDeleteUrl);
+                    // Atur action form untuk delete
+                    document.getElementById('deletepatrolForm').setAttribute('action',
+                        userDeleteUrl);
+                });
             });
         });
-    });
-</script>
+    </script>

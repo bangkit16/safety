@@ -18,8 +18,8 @@ class PatrolSeeder extends Seeder
             'tanggal' => '2024-12-06',
             'divisi_id' => 1,
             'user_id' => 3,
-            'temuan' => 'Ada Masalah di atap',
-            'perbaikan' => 'Bangun ulang atap',
+            'temuan' => 'Atap rusak',
+            'dokumentasi' => 'temuan1.jpg',
             'status' => 'Belum Dicek',
             'created_at' => now(),
             'updated_at' => now()

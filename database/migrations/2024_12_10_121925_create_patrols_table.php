@@ -17,8 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('divisi_id')->index();
             $table->unsignedBigInteger('user_id')->index();
             $table->text('temuan')->nullable();
-            $table->text('perbaikan')->nullable();
-            $table->enum('status', ['Setuju Semua', 'Setuju Admin', 'Revisi', 'Belum Dicek']);
+            $table->string('dokumentasi')->nullable();
+            $table->enum('status', ['Setuju Semua', 'Setuju Admin', 'Belum Dicek']);
             $table->timestamps();
 
             $table->foreign('divisi_id')->references('divisi_id')->on('divisis');

@@ -15,10 +15,12 @@ class PerbaikanSeeder extends Seeder
     {
         DB::table('perbaikans')->insert([
             'perbaikan_id' => 1,
+            'perbaikan' => 'perlu diganti',
             'target' => '2024-12-16',
             'divisi_id' => 1,
             'patrol_id' => 1,
             'user_id' => 3,
+            'dokumentasi' => 'dokumentasi.jpg',
             'status' => 'Proses',
             'created_at' => now(),
             'updated_at' => now()

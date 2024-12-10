@@ -98,8 +98,6 @@ class DivisiController extends Controller
         return redirect()->route('divisi.index')->withStatus(__('Divisi berhasil diperbaharui.'));
     }
 
-
-    
     public function destroy($id)
     {
         // Temukan data berdasarkan ID

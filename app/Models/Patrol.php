@@ -27,6 +27,6 @@ class Patrol extends Model
     }
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id'); // 'id' adalah primary key di tabel users
+        return $this->belongsTo(User::class, 'user_id', 'user_id'); // 'id' adalah primary key di tabel users
     }
 }

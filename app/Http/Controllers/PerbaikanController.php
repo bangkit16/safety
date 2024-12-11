@@ -86,12 +86,12 @@ class PerbaikanController extends Controller
     {
         // Validasi input
         $request->validate([
-            'perbaikan' => 'required',
+            'perbaikan' => 'nullable',
             'patrol_id' => 'required|exists:patrols,patrol_id',
             'user_id' => 'required|exists:users,user_id',
             'divisi_id' => 'required|exists:divisis,divisi_id',
-            'target' => 'required|date',
-            'dokumentasi' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Validasi untuk file gambar
+            'target' => 'nullable|date',
+            'dokumentasi' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validasi untuk file gambar
         ]);
 
         // Unggah file dan simpan path ke dalam database
@@ -108,6 +108,18 @@ class PerbaikanController extends Controller
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+        } else {
+            Perbaikan::create([
+                'perbaikan' => $request->perbaikan,
+                'divisi_id' => $request->divisi_id,
+                'patrol_id' => $request->patrol_id,
+                'user_id' => auth()->user()->user_id,
+                'dokumentasi'  => $request->dokumentasi, // Simpan path file
+                'target' => $request->target,
+                'status' => 'Proses',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
         
         return redirect()->route('perbaikan.index')->withStatus('Perbaikan berhasil ditambahkan.');
@@ -118,11 +130,11 @@ class PerbaikanController extends Controller
     {
         // Validasi input
         $request->validate([
-            'edit_perbaikan' => 'required',
+            'edit_perbaikan' => 'nullable',
             'edit_patrol_id' => 'required|exists:patrols,patrol_id',
             'edit_user_id' => 'required|exists:users,user_id',
             'edit_divisi_id' => 'required|exists:divisis,divisi_id',
-            'edit_target' => 'required|date',
+            'edit_target' => 'nulable|date',
             'edit_dokumentasi' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 

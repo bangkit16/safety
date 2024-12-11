@@ -37,7 +37,7 @@
                         <table class="table table-responsive-xl" style="width: 100%" id="">
                             <thead class="text-primary ">
                                 <tr>
-                                    <th scope="col"class="text-center">Temuan Patroli</th>
+                                    <th scope="col">Temuan Patroli</th>
                                     <th scope="col">
                                         <span style="cursor: pointer;"
                                             onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'divisi_id', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
@@ -75,7 +75,7 @@
                                     <tr>
                                         <td>
                                             @foreach ($apar as $p)
-                                                @if ($p->apar_id == $d->apar_id)
+                                                @if ($p->patrol_id == $d->patrol_id)
                                                     {{ $p->temuan }}
                                                 @endif
                                             @endforeach
@@ -371,7 +371,7 @@
 
                             <!-- Description Feedback -->
                             <div class="">
-                                <label for="edit-perbaikan" class="col-form-label">Perbaikan Patrol:
+                                <label for="edit-perbaikan" class="col-form-label">Perbaikan Temuan:
                                 </label>
                                 <textarea name="edit_perbaikan" id="edit-perbaikan"
                                     class="form-control{{ $errors->has('edit_perbaikan') ? ' is-invalid' : '' }}" placeholder="Description Feedback">{{ old('edit_perbaikan') }}</textarea>

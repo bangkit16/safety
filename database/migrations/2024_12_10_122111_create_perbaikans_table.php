@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('perbaikans', function (Blueprint $table) {
             $table->id('perbaikan_id');
-            $table->text('perbaikan');
-            $table->date('target');
+            $table->text('perbaikan')->nullable();
+            $table->date('target')->nullable();
             $table->unsignedBigInteger('patrol_id')->index();
             $table->unsignedBigInteger('divisi_id')->index();
             $table->unsignedBigInteger('user_id')->index();
             $table->enum('status', ['Selesai', 'Proses']);
-            $table->string('dokumentasi');
+            $table->string('dokumentasi')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('users');

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PatrolController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -31,6 +32,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('divisi', 'App\Http\Controllers\DivisiController', ['except' => ['show']]);
 	Route::resource('patrol', 'App\Http\Controllers\PatrolController', ['except' => ['show']]);
 	Route::resource('perbaikan', 'App\Http\Controllers\PerbaikanController', ['except' => ['show']]);
+	Route::post('/patrol/admin', [PatrolController::class, 'approveAdmin'])->name('patrol.approve.admin');
+	Route::post('/patrol/manager', [PatrolController::class, 'approveManager'])->name('patrol.approve.manager');
+
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
 	Route::put('profile/{id}', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
 	Route::put('profile/password/{id}', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);

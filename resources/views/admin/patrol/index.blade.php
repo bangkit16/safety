@@ -10,10 +10,12 @@
                             <h4 class="card-title">Patroli Keselamatan</h4>
                         </div>
                         <div class="col-4 text-right">
-                            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
-                                data-bs-target="#addpatrol">
-                                Add Patroli
-                            </button>
+                            @if (auth()->user()->role_id == 1 || auth()->user()->role_id == 3)
+                                <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
+                                    data-bs-target="#addpatrol">
+                                    Add Patroli
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -98,6 +100,11 @@
                                                         {{ $d->status }}</div>
                                                 @break
 
+                                                @case('Setuju Admin')
+                                                    <div class="rounded bg-warning text-center p-1 fw-bolder" style="color: white">
+                                                        {{ $d->status }}</div>
+                                                @break
+
                                                 @default
                                                     <div class="rounded bg-success text-center p-1 fw-bolder" style="color: white">
                                                         {{ $d->status }}</div>
@@ -110,15 +117,90 @@
                                                     <i class="fas fa-ellipsis-v"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                                    <a class="dropdown-item edit-button" data-bs-toggle="modal"
-                                                        data-bs-target="#editpatrol" data-id="{{ $d->patrol_id }}"
-                                                        data-divisi-id="{{ $d->divisi_id }}"
-                                                        data-temuan="{{ $d->temuan }}"
-                                                        data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
-                                                        data-url="{{ url('patrol/' . $d->patrol_id) }}">Edit</a>
-                                                    <a class="dropdown-item delete-button" data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal" data-id="{{ $d->patrol_id }}"
-                                                        data-url="{{ url('patrol/' . $d->patrol_id) }}">Delete</a>
+                                                    @switch($d->status)
+                                                        @case('Setuju Semua')
+                                                            <a class="dropdown-item show-button" data-bs-toggle="modal"
+                                                                data-bs-target="#showPatrolModal" data-user="{{ $d->user->name }}"
+                                                                data-divisi="{{ $d->divisi->nama }}"
+                                                                data-temuan="{{ $d->temuan }}"
+                                                                data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}">
+                                                                Show
+                                                            </a>
+
+                                                            @if (auth()->user()->role_id == 1)
+                                                                <a class="dropdown-item edit-button" data-bs-toggle="modal"
+                                                                    data-bs-target="#editpatrol" data-id="{{ $d->patrol_id }}"
+                                                                    data-divisi-id="{{ $d->divisi_id }}"
+                                                                    data-temuan="{{ $d->temuan }}"
+                                                                    data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
+                                                                    data-url="{{ url('patrol/' . $d->patrol_id) }}">Edit</a>
+                                                            @endif
+                                                        @break
+
+                                                        @case('Belum Dicek')
+                                                            <a class="dropdown-item show-button" data-bs-toggle="modal"
+                                                                data-bs-target="#showPatrolModal" data-user="{{ $d->user->name }}"
+                                                                data-divisi="{{ $d->divisi->nama }}"
+                                                                data-temuan="{{ $d->temuan }}"
+                                                                data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}">
+                                                                Show
+                                                            </a>
+
+                                                            @if (auth()->user()->role_id == 1)
+                                                                <a class="dropdown-item edit-button" data-bs-toggle="modal"
+                                                                    data-bs-target="#editpatrol" data-id="{{ $d->patrol_id }}"
+                                                                    data-divisi-id="{{ $d->divisi_id }}"
+                                                                    data-temuan="{{ $d->temuan }}"
+                                                                    data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
+                                                                    data-url="{{ url('patrol/' . $d->patrol_id) }}">Edit</a>
+                                                                <a class="dropdown-item approve-button" data-bs-toggle="modal"
+                                                                    data-bs-target="#editperbaikan"
+                                                                    data-divisi-id="{{ $d->divisi_id }}"
+                                                                    data-patrol-id="{{ $d->patrol_id }}"
+                                                                    data-user-id="{{ $d->user_id }}"
+                                                                    data-url="{{ route('patrol.approve.admin') }}">Approve Admin</a>
+                                                            @endif
+                                                        @break
+
+                                                        @case('Setuju Admin')
+                                                            <a class="dropdown-item show-button" data-bs-toggle="modal"
+                                                                data-bs-target="#showPatrolModal"
+                                                                data-user="{{ $d->user->name }}"
+                                                                data-divisi="{{ $d->divisi->nama }}"
+                                                                data-temuan="{{ $d->temuan }}"
+                                                                data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}">
+                                                                Show
+                                                            </a>
+
+                                                            @if (auth()->user()->role_id == 1)
+                                                                <a class="dropdown-item edit-button" data-bs-toggle="modal"
+                                                                    data-bs-target="#editpatrol" data-id="{{ $d->patrol_id }}"
+                                                                    data-divisi-id="{{ $d->divisi_id }}"
+                                                                    data-temuan="{{ $d->temuan }}"
+                                                                    data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
+                                                                    data-url="{{ url('patrol/' . $d->patrol_id) }}">Edit</a>
+                                                            @endif
+                                                            @if (auth()->user()->role_id == 2)
+                                                                <a class="dropdown-item approve-button" data-bs-toggle="modal"
+                                                                    data-bs-target="#approveModal" data-id="{{ $d->patrol_id }}"
+                                                                    data-url="{{ url('patrol/' . $d->patrol_id . '/manager') }}"
+                                                                    title="Approve oleh Manager">
+                                                                    Approve Management
+                                                                </a>
+                                                            @endif
+                                                        @break
+
+                                                        @default
+                                                            <a class="dropdown-item show-button" data-bs-toggle="modal"
+                                                                data-bs-target="#showPatrolModal"
+                                                                data-user="{{ $d->user->name }}"
+                                                                data-divisi="{{ $d->divisi->nama }}"
+                                                                data-temuan="{{ $d->temuan }}"
+                                                                data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}">
+                                                                Show
+                                                            </a>
+                                                        @break
+                                                    @endswitch
                                                 </div>
                                             </div>
                                         </td>
@@ -135,8 +217,8 @@
                     <div class="card-footer ">
                         <nav class="d-flex justify-content-between align-items-center" aria-label="...">
                             <div class="form-group">
-                                <select id="paginationLimit" class="form-control" onchange="updatePaginationLimit(this.value)"
-                                    style="font-size: 12px">
+                                <select id="paginationLimit" class="form-control"
+                                    onchange="updatePaginationLimit(this.value)" style="font-size: 12px">
                                     <option value="10" {{ request('limit') == 10 ? 'selected' : '' }}>10</option>
                                     <option value="25" {{ request('limit') == 25 ? 'selected' : '' }}>25</option>
                                     <option value="50" {{ request('limit') == 50 ? 'selected' : '' }}>50</option>
@@ -150,6 +232,183 @@
                             @endif
                         </nav>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="showPatrolModal" tabindex="-1" aria-labelledby="showPatrolModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content shadow-lg border-0">
+                    <div class="modal-header text-white">
+                        <h5 class="modal-title" id="showPatrolModalLabel"><i class="fas fa-info-circle me-2"></i>Detail
+                            Patroli</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 text-center mb-3">
+                                <img id="showDokumentasi" src="" alt="Dokumentasi" class="img-thumbnail"
+                                    style="max-width: 100%; max-height: 300px">
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <strong>Temuan:</strong>
+                                        <span id="showTemuan" class="text-muted"></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <strong>User:</strong>
+                                        <span id="showUser" class="text-muted"></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <strong>Divisi:</strong>
+                                        <span id="showDivisi" class="text-muted"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Tutup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal Edit User -->
+        <div class="modal fade" id="editperbaikan" tabindex="-1" aria-labelledby="editperbaikanTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editperbaikanTitle">Add Perbaikan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" method="POST" action="" id="editperbaikanForm"
+                            enctype="multipart/form-data">
+                            @csrf
+
+                            <!-- Role User -->
+                            <div class="form-group">
+                                <label for="approve-patrol-id" class="col-form-label">Name Temuan:</label>
+                                <select name="approve_patrol_id" id="approve-patrol-id"
+                                    class="form-control{{ $errors->has('approve_patrol_id') ? ' is-invalid' : '' }}"
+                                    style="height: 50px">
+                                    <option value="">- Select Patrol -</option>
+                                    @foreach ($data as $r)
+                                        @if ($r->temuan == !null)
+                                            <option value="{{ $r->patrol_id }}"
+                                                {{ old('approve_patrol_id') == $r->patrol_id ? 'selected' : '' }}>
+                                                {{ $r->temuan }}
+                                            </option>
+                                        @else
+                                            <option value="{{ $r->patrol_id }}"
+                                                {{ old('approve_patrol_id') == $r->patrol_id ? 'selected' : '' }}>
+                                                Tidak ada temuan
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('approve_patrol_id'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('approve_patrol_id') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- Role User -->
+                            <div class="form-group">
+                                <label for="approve-divisi-id" class="col-form-label">Name Divisi:</label>
+                                <select name="approve_divisi_id" id="approve-divisi-id"
+                                    class="form-control{{ $errors->has('approve_divisi_id') ? ' is-invalid' : '' }}"
+                                    style="height: 50px">
+                                    <option value="">- Select Divisi -</option>
+                                    @foreach ($divisi as $r)
+                                        <option value="{{ $r->divisi_id }}"
+                                            {{ old('approve_divisi_id') == $r->divisi_id ? 'selected' : '' }}>
+                                            {{ $r->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('approve_divisi_id'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('approve_divisi_id') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- Role User -->
+                            <div class="form-group">
+                                <label for="approve-user-id" class="col-form-label">Name User:</label>
+                                <select name="approve_user_id" id="approve-user-id"
+                                    class="form-control{{ $errors->has('approve_user_id') ? ' is-invalid' : '' }}"
+                                    style="height: 50px">
+                                    <option value="">- Select User -</option>
+                                    @foreach ($user as $r)
+                                        {{-- @if (auth()->user()->role_id == 3) --}}
+                                        <option value="{{ $r->user_id }}"
+                                            {{ old('approve_user_id') == $r->user_id ? 'selected' : '' }}>
+                                            {{ $r->name }}
+                                        </option>
+                                        {{-- @endif --}}
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('approve_user_id'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('approve_user_id') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- Description Feedback -->
+                            <div class="">
+                                <label for="approve-perbaikan" class="col-form-label">Perbaikan Temuan:
+                                </label>
+                                <textarea name="approve_perbaikan" id="approve-perbaikan"
+                                    class="form-control{{ $errors->has('approve_perbaikan') ? ' is-invalid' : '' }}" placeholder="Description Feedback">{{ old('approve_perbaikan') }}</textarea>
+                                @if ($errors->has('approve_perbaikan'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('approve_perbaikan') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="">
+                                <label for="approve-dokumentasi" class="col-form-label">Dokumentasi: </label>
+                                <input type="file" name="approve_dokumentasi" id="approve_dokumentasi"
+                                    class="form-control{{ $errors->has('approve_dokumentasi') ? ' is-invalid' : '' }}"
+                                    placeholder="Unggah file dalam format jpg/png/jpeg (maks. 2MB)">
+                                {{-- <img id="current-icon" src="" alt="Current Icon"
+                                    style="max-width: 100px; margin-top: 10px; display: none;"> --}}
+                                @if ($errors->has('approve_dokumentasi'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('approve_dokumentasi') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="form-group">
+                                <label for="approve-target" class="col-form-label">Target Perbaikan: </label>
+                                <input type="date" name="approve_target" id="approve-target"
+                                    class="form-control{{ $errors->has('approve_target') ? ' is-invalid' : '' }}"
+                                    placeholder="Name Divisi" value="{{ old('approve_target') }}">
+                                @if ($errors->has('approve_target'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('approve_target') }}
+                                    </span>
+                                @endif
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="text-white btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="text-white btn btn-primary">Update Perbaikan</button>
+                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -170,8 +429,7 @@
                             <div class="">
                                 <label for="temuan" class="col-form-label">Temuan Patroli:
                                 </label>
-                                <textarea name="temuan" id="temuan"
-                                    class="form-control{{ $errors->has('temuan') ? ' is-invalid' : '' }}" 
+                                <textarea name="temuan" id="temuan" class="form-control{{ $errors->has('temuan') ? ' is-invalid' : '' }}"
                                     placeholder="Description Feedback">{{ old('temuan') }}</textarea>
                                 @if ($errors->has('temuan'))
                                     <span class="invalid-feedback" role="alert">
@@ -194,11 +452,11 @@
 
                             <!-- Role User -->
                             <div class="form-group">
-                                <label for="divisi_id" class="col-form-label">Name Divisi_id:</label>
+                                <label for="divisi_id" class="col-form-label">Name Divisi:</label>
                                 <select name="divisi_id" id="divisi_id"
                                     class="form-control{{ $errors->has('divisi_id') ? ' is-invalid' : '' }}"
                                     style="height: 50px">
-                                    <option value="">- Select Role -</option>
+                                    <option value="">- Select Divisi -</option>
                                     @foreach ($divisi as $r)
                                         <option value="{{ $r->divisi_id }}"
                                             {{ old('divisi_id') == $r->divisi_id ? 'selected' : '' }}>
@@ -253,8 +511,7 @@
                                 <label for="edit-temuan" class="col-form-label">Temuan Patroli:
                                 </label>
                                 <textarea name="edit_temuan" id="edit-temuan"
-                                    class="form-control{{ $errors->has('edit_temuan') ? ' is-invalid' : '' }}" 
-                                    placeholder="Description Feedback">{{ old('edit_temuan') }}</textarea>
+                                    class="form-control{{ $errors->has('edit_temuan') ? ' is-invalid' : '' }}" placeholder="Description Feedback">{{ old('edit_temuan') }}</textarea>
                                 @if ($errors->has('edit_temuan'))
                                     <span class="invalid-feedback" role="alert">
                                         {{ $errors->first('edit_temuan') }}
@@ -283,7 +540,7 @@
                                 <select name="edit_divisi_id"
                                     class="form-control {{ $errors->has('edit_divisi_id') ? ' is-invalid' : '' }}"
                                     id="edit-divisi-id" style="height: 50px">
-                                    <option value="">- Role -</option>
+                                    <option value="">- Divisi -</option>
                                     @foreach ($divisi as $p)
                                         <option value="{{ $p->divisi_id }}"
                                             {{ old('edit_divisi_id') == $p->divisi_id ? 'selected' : '' }}>
@@ -322,27 +579,27 @@
 
         <!-- Modal Delete User -->
         <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Delete User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure to delete data?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <form id="deletepatrolForm" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-primary">Delete</button>
-                    </form>
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Delete User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure to delete data?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <form id="deletepatrolForm" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     @endsection
 
     @stack('js')
@@ -363,6 +620,16 @@
                 console.log(@json($errors->all()));
             }
             if (
+                {{ $errors->has('approve_patrol_id') || $errors->has('approve_dokumentasi') || $errors->has('approve_divisi_id') || $errors->has('approve_user_id') || $errors->has('approve_perbaikan') || $errors->has('approve_target') ? 'true' : 'false' }}
+            ) {
+                var editperbaikanModal = new bootstrap.Modal(document.getElementById('editperbaikan'));
+                var url = localStorage.getItem('Url');
+                editperbaikanModal.show();
+                $('#editperbaikanForm').attr('action', url);
+
+                console.log(@json($errors->all()));
+            }
+            if (
                 {{ $errors->has('edit_temuan') || $errors->has('edit_dokumentasi') || $errors->has('edit_divisi_id') ? 'true' : 'false' }}
             ) {
                 var editpatrolModal = new bootstrap.Modal(document.getElementById('editpatrol'));
@@ -374,6 +641,55 @@
             }
         });
 
+        document.addEventListener('DOMContentLoaded', function() {
+            var editButtons = document.querySelectorAll('.approve-button');
+
+            editButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var patrolId = this.getAttribute('data-id');
+                    var patrolPatrol = this.getAttribute('data-patrol-id');
+                    var patrolDivisi = this.getAttribute('data-divisi-id');
+                    var patrolUser = this.getAttribute('data-user-id');
+                    var actionUrl = this.getAttribute('data-url');
+                    localStorage.setItem('Url', actionUrl);
+
+                    console.log(patrolId, patrolDivisi, patrolUser, patrolPatrol, actionUrl);
+
+                    // $('#edit-patrol-id').val(patrolId);
+                    $('#approve-divisi-id').val(patrolDivisi);
+                    $('#approve-patrol-id').val(patrolPatrol);
+                    $('#approve-user-id').val(patrolUser);
+
+                    // Atur action form untuk update
+                    $('#editperbaikanForm').attr('action', actionUrl);
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.show-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // Ambil data dari tombol
+                    const user = this.getAttribute('data-user');
+                    const divisi = this.getAttribute('data-divisi');
+                    const temuan = this.getAttribute('data-temuan');
+                    const dokumentasi = this.getAttribute('data-dokumentasi');
+
+                    // Isi data ke modal
+                    document.getElementById('showUser').innerText = user;
+                    document.getElementById('showDivisi').innerText = divisi;
+                    document.getElementById('showTemuan').innerText = temuan;
+
+                    const dokumentasiImg = document.getElementById('showDokumentasi');
+                    if (dokumentasi) {
+                        dokumentasiImg.src = dokumentasi;
+                        dokumentasiImg.style.display = "block";
+                    } else {
+                        dokumentasiImg.style.display = "none";
+                    }
+                });
+            });
+        });
 
         document.addEventListener('DOMContentLoaded', function() {
             var editButtons = document.querySelectorAll('.edit-button');

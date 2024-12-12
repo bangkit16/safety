@@ -12,6 +12,9 @@ class Perbaikan extends Model
     protected $table = 'perbaikans';
     protected $primaryKey = 'perbaikan_id';
     protected $fillable = [
+        'temuan',
+        'keterangan',
+        'dokumentasi',
         'perbaikan',
         'target',
         'patrol_id',
@@ -32,6 +35,6 @@ class Perbaikan extends Model
     }
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id'); // 'id' adalah primary key di tabel users
+        return $this->belongsTo(User::class, 'user_id', 'user_idid'); // 'id' adalah primary key di tabel users
     }
 }

@@ -51,9 +51,7 @@ class PatrolController extends Controller
                 if ($bulan) {
                     $q->orWhereMonth('tanggal', $bulan); // Cari berdasarkan bulan
                 }
-                $q->orWhere('status', 'like', "%{$search}%")
-                ->orWhere('temuan', 'like', "%{$search}%")
-                ->orWhere('tanggal', 'like', "%{$search}%");
+                $q->orWhere('tanggal', 'like', "%{$search}%");
             });
         }        
 
@@ -81,36 +79,17 @@ class PatrolController extends Controller
     {
         // Validasi input
         $request->validate([
-            'temuan' => 'nullable',
+            'user_id' => 'required|exists:users,user_id',
             'divisi_id' => 'required|exists:divisis,divisi_id',
-            'dokumentasi' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validasi untuk file gambar
         ]);
-
-        // Unggah file dan simpan path ke dalam database
-        if ($request->file('dokumentasi')) {
-            $filePath = $request->file('dokumentasi')->store('patrol', 'public'); // Simpan ke storage/public/divisi
-            Patrol::create([
-                'temuan' => $request->temuan,
+            
+        Patrol::create([
                 'divisi_id' => $request->divisi_id,
-                'dokumentasi'  => $filePath, // Simpan path file
                 'tanggal' => now(),
-                'user_id' => auth()->user()->user_id,
-                'status' => 'Belum Dicek',
+                'user_id' => $request->user_id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-        } else {
-            Patrol::create([
-                'temuan' => $request->temuan,
-                'divisi_id' => $request->divisi_id,
-                'dokumentasi'  => $request->dokumentasi, // Simpan path file
-                'tanggal' => now(),
-                'user_id' => auth()->user()->user_id,
-                'status' => 'Belum Dicek',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
         
         return redirect()->route('patrol.index')->withStatus('Patrol berhasil ditambahkan.');
     }
@@ -120,36 +99,18 @@ class PatrolController extends Controller
     {
         // Validasi input
         $request->validate([
-            'edit_temuan' => 'nullable',
+            'edit_user_id' => 'required|exists:users,user_id',
             'edit_divisi_id' => 'required|exists:divisis,divisi_id',
-            'edit_dokumentasi' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         // Temukan data berdasarkan ID
         $patrol = Patrol::findOrFail($id);
-
-        if ($request->hasFile('edit_dokumentasi')) {
-            // Hapus file lama jika ada
-            if ($patrol->dokumentasi && Storage::disk('public')->exists($patrol->dokumentasi)) {
-                Storage::disk('public')->delete($patrol->dokumentasi);
-            }
-
-            // Simpan file baru
-            $filePath = $request->file('edit_dokumentasi')->store('patrol', 'public');
+        
             $patrol->update([
-                'temuan' => $request->edit_temuan,
-                'dokumentasi' => $filePath,
+                'user_id' => $request->edit_user_id,
                 'divisi_id' => $request->edit_divisi_id,
                 'updated_at' => now(),
             ]);
-        } else {
-            // Jika tidak ada file baru, tetap simpan data lama
-            $patrol->update([
-                'temuan' => $request->edit_temuan,
-                'divisi_id' => $request->edit_divisi_id,
-                'updated_at' => now(),
-            ]);
-        }
 
         return redirect()->route('patrol.index')->withStatus(__('Patrol berhasil diperbaharui.'));
     }
@@ -159,115 +120,10 @@ class PatrolController extends Controller
         // Temukan data berdasarkan ID
         $patrol = Patrol::findOrFail($id);
     
-        // Hapus file gambar jika ada
-        if ($patrol->dokumentasi && Storage::disk('public')->exists($patrol->dokumentasi)) {
-            Storage::disk('public')->delete($patrol->dokumentasi);
-        }
-    
         // Hapus data dari database
         $patrol->delete();
     
         return redirect()->route('patrol.index')->withStatus(__('Patrol berhasil dihapus.'));
-    }
-
-    public function approveAdmin(Request $request)
-    {
-        
-        dd($request->approve_patrol_id);    
-        // Validasi input
-        $request->validate([
-            'approve_perbaikan' => 'nullable',
-            'approve_patrol_id' => 'required|exists:patrols,patrol_id',
-            'approve_user_id' => 'required|exists:users,user_id',
-            'approve_divisi_id' => 'required|exists:divisis,divisi_id',
-            'approve_target' => 'nullable|date',
-            'approve_dokumentasi' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validasi untuk file gambar
-        ]);
-
-
-        $patrol = Patrol::find($request->patrol_id);
-        
-        // Unggah file dan simpan path ke dalam database
-        if ($request->file('dokumentasi')) {
-            $filePath = $request->file('dokumentasi')->store('perbaikan', 'public'); // Simpan ke storage/public/divisi
-            Perbaikan::create([
-                'perbaikan' => $request->approve_perbaikan,
-                'divisi_id' => $request->approve_divisi_id,
-                'patrol_id' => $request->approve_patrol_id,
-                'user_id' => $request->approve_user_id,
-                'dokumentasi'  => $filePath, // Simpan path file
-                'target' => $request->approve_target,
-                'status' => 'Proses',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        } else {
-            Perbaikan::create([
-                'perbaikan' => $request->approve_perbaikan,
-                'divisi_id' => $request->approve_divisi_id,
-                'patrol_id' => $request->approve_patrol_id,
-                'user_id' => $request->approve_user_id,
-                'dokumentasi'  => $request->approve_dokumentasi, // Simpan path file
-                'target' => $request->approve_target,
-                'status' => 'Proses',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
-
-        $patrol->update([
-            'status' => 'Setuju Admin',
-            'updated_at' => now(),
-        ]);
-
-        return redirect()->route('patrol.index')->withStatus('Status berhasil diubah.');
-    }
-
-    public function approveManager(Request $request)
-    {
-        $request->validate([
-            'perbaikan' => 'nullable',
-            'patrol_id' => 'required|exists:patrols,patrol_id',
-            'user_id' => 'required|exists:users,user_id',
-            'divisi_id' => 'required|exists:divisis,divisi_id',
-            'target' => 'nullable|date',
-            'dokumentasi' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validasi untuk file gambar
-        ]);
-        $patrol = Patrol::find($request->patrol_id);
-        
-        // Unggah file dan simpan path ke dalam database
-        if ($request->file('dokumentasi')) {
-            $filePath = $request->file('dokumentasi')->store('perbaikan', 'public'); // Simpan ke storage/public/divisi
-            Perbaikan::create([
-                'perbaikan' => $request->perbaikan,
-                'divisi_id' => $request->divisi_id,
-                'patrol_id' => $request->patrol_id,
-                'user_id' => auth()->user()->user_id,
-                'dokumentasi'  => $filePath, // Simpan path file
-                'target' => $request->target,
-                'status' => 'Proses',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        } else {
-            Perbaikan::create([
-                'perbaikan' => $request->perbaikan,
-                'divisi_id' => $request->divisi_id,
-                'patrol_id' => $request->patrol_id,
-                'user_id' => auth()->user()->user_id,
-                'dokumentasi'  => $request->dokumentasi, // Simpan path file
-                'target' => $request->target,
-                'status' => 'Proses',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
-        $patrol->update([
-            'status' => 'Setuju Semua',
-            'updated_at' => now(),
-        ]);
-
-        return redirect()->route('patrol.index')->withStatus('Status berhasil diubah.');
     }
 
 

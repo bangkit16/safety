@@ -13,17 +13,15 @@ return new class extends Migration
     {
         Schema::create('perbaikans', function (Blueprint $table) {
             $table->id('perbaikan_id');
+            $table->unsignedBigInteger('patrol_id')->index();
+            $table->string('temuan')->nullable();
+            $table->text('keterangan')->nullable();
             $table->text('perbaikan')->nullable();
             $table->date('target')->nullable();
-            $table->unsignedBigInteger('patrol_id')->index();
-            $table->unsignedBigInteger('divisi_id')->index();
-            $table->unsignedBigInteger('user_id')->index();
-            $table->enum('status', ['Selesai', 'Proses']);
+            $table->enum('status', ['Setuju Semua', 'Setuju Admin', 'Belum Dicek', 'Proses', 'Selesai', 'Lolos Admin', 'Lolos Semua']);
             $table->string('dokumentasi')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('user_id')->on('users');
-            $table->foreign('divisi_id')->references('divisi_id')->on('divisis');
             $table->foreign('patrol_id')->references('patrol_id')->on('patrols');
         });
     }

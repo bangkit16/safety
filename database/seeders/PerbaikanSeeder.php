@@ -21,7 +21,7 @@ class PerbaikanSeeder extends Seeder
             'patrol_id' => 1,
             'user_id' => 3,
             'dokumentasi' => 'dokumentasi.jpg',
-            'status' => 'Proses',
+            'status' => 'Selesai',
             'created_at' => now(),
             'updated_at' => now()
         ]);

@@ -20,7 +20,7 @@ class PatrolSeeder extends Seeder
             'user_id' => 3,
             'temuan' => 'Atap rusak',
             'dokumentasi' => 'temuan1.jpg',
-            'status' => 'Belum Dicek',
+            'status' => 'Selesai',
             'created_at' => now(),
             'updated_at' => now()
         ]);

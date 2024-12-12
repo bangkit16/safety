@@ -14,9 +14,6 @@ class Patrol extends Model
         'tanggal',
         'divisi_id',
         'user_id',
-        'temuan',
-        'dokumentasi',
-        'status',
         'created_at',
         'updated_at',
     ];

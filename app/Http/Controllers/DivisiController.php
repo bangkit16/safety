@@ -45,7 +45,7 @@ class DivisiController extends Controller
         // Validasi input
         $validated = $request->validate([
             'nama' => 'required|string|max:225',
-            'tanda_tangan' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Validasi untuk file gambar
+            'tanda_tangan' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validasi untuk file gambar
         ]);
 
         // Unggah file dan simpan path ke dalam database

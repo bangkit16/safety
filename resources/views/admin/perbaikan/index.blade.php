@@ -199,8 +199,16 @@
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
                                                                     data-url="{{ url('perbaikan/' . $d->patrol_id) }}">Edit</a>
+                                                                <a class="dropdown-item perbaikan-button" data-bs-toggle="modal"
+                                                                    data-bs-target="#addperbaikan"
+                                                                    data-id="{{ $d->perbaikan_id }}"
+                                                                    data-patrol-id="{{ $d->patrol_id }}"
+                                                                    data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
+                                                                    data-keterangan="{{ $d->keterangan }}"
+                                                                    data-url="{{ url('perbaikan/form/' . $d->perbaikan_id) }}">Form
+                                                                    Perbaikan</a>
                                                             @endif
-                                                            @if (auth()->user()->role_id == 3 && auth()->user()->role_id == 1)
+                                                            @if (auth()->user()->role_id == 3)
                                                                 <a class="dropdown-item perbaikan-button" data-bs-toggle="modal"
                                                                     data-bs-target="#addperbaikan"
                                                                     data-id="{{ $d->perbaikan_id }}"
@@ -280,7 +288,8 @@
                                                             </a>
                                                             @if (auth()->user()->role_id == 1)
                                                                 <a class="dropdown-item edit-button" data-bs-toggle="modal"
-                                                                    data-bs-target="#editperbaikan" data-id="{{ $d->patrol_id }}"
+                                                                    data-bs-target="#editperbaikan"
+                                                                    data-id="{{ $d->patrol_id }}"
                                                                     data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                     data-keterangan="{{ $d->keterangan }}"
                                                                     data-perbaikan="{{ $d->perbaikan }}"
@@ -296,6 +305,7 @@
                                                                 </a>
                                                             @endif
                                                         @break
+
                                                         @case('Lolos Semua')
                                                             <a class="dropdown-item show-button" data-bs-toggle="modal"
                                                                 data-bs-target="#showPatrolModal"
@@ -308,7 +318,8 @@
                                                             </a>
                                                             @if (auth()->user()->role_id == 1)
                                                                 <a class="dropdown-item edit-button" data-bs-toggle="modal"
-                                                                    data-bs-target="#editperbaikan" data-id="{{ $d->patrol_id }}"
+                                                                    data-bs-target="#editperbaikan"
+                                                                    data-id="{{ $d->patrol_id }}"
                                                                     data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                     data-keterangan="{{ $d->keterangan }}"
                                                                     data-perbaikan="{{ $d->perbaikan }}"

@@ -125,7 +125,7 @@ class PerbaikanController extends Controller
             }
         }
 
-        return redirect()->route('patrol.index')->withStatus('Perbaikan berhasil ditambahkan.');
+        return redirect()->route('perbaikan.index')->withStatus('Perbaikan berhasil ditambahkan.');
     }
 
 

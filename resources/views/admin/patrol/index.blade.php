@@ -51,7 +51,7 @@
                                     <th scope="col">
                                         <span style="cursor: pointer;"
                                             onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'user_id', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
-                                            Nama Pembuat
+                                            Nama Inspektor
                                             @if ($sortBy === 'user_id')
                                                 {{ $order === 'asc' ? '🔼' : '🔽' }}
                                             @endif

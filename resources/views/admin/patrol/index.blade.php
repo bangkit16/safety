@@ -100,7 +100,7 @@
                                                         data-divisi-id="{{ $d->divisi_id }}"
                                                         data-user-id="{{ $d->user_id }}"
                                                         data-url="{{ url('patrol/' . $d->patrol_id) }}">Edit</a>
-                                                    @if (auth()->user()->user_id == $d->user_id && auth()->user()->role_id == 1)
+                                                    @if (auth()->user()->user_id == $d->user_id || auth()->user()->role_id == 1)
                                                         <a class="dropdown-item temuan-button" data-bs-toggle="modal"
                                                             data-bs-target="#addtemuan" data-id="{{ $d->patrol_id }}"
                                                             data-divisi-id="{{ $d->divisi_id }}"

@@ -239,8 +239,13 @@
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
                                                                     data-url="{{ url('perbaikan/' . $d->patrol_id) }}">Edit</a>
+                                                                    <a class="dropdown-item dokum-button" data-bs-toggle="modal"
+                                                                    data-bs-target="#dokumModal" data-id="{{ $d->perbaikan_id }}"
+                                                                    data-perbaikan="{{ $d->perbaikan }}"
+                                                                    data-url="{{ url('perbaikan/dokumentasi/' . $d->perbaikan_id) }}">Dokumentasi
+                                                                    Perbaikan</a>
                                                             @endif
-                                                            @if (auth()->user()->role_id == 3 && auth()->user()->role_id == 1)
+                                                            @if (auth()->user()->role_id == 3)
                                                                 <a class="dropdown-item dokum-button" data-bs-toggle="modal"
                                                                     data-bs-target="#dokumModal" data-id="{{ $d->perbaikan_id }}"
                                                                     data-perbaikan="{{ $d->perbaikan }}"

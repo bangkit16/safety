@@ -77,7 +77,7 @@
                                     <tr>
                                         <td>
                                             <img src="{{ asset('storage/' . $d->temuan) }}" alt="{{ $d->temuan }}"
-                                                class="img-fluid" style="max-width: 100px">
+                                                class="img-fluid" style="max-width: 200px">
                                         </td>
                                         <td>{{ $d->keterangan }}</td>
                                         <td>

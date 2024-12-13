@@ -18,10 +18,12 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->unsignedBigInteger('role_id')->index();
+            $table->unsignedBigInteger('divisi_id')->index()->nullable();
             $table->rememberToken();
             $table->timestamps();
 
             $table->foreign('role_id')->references('role_id')->on('roles');
+            $table->foreign('divisi_id')->references('divisi_id')->on('divisis');
         });
     }
 

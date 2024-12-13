@@ -12,13 +12,12 @@ class Perbaikan extends Model
     protected $table = 'perbaikans';
     protected $primaryKey = 'perbaikan_id';
     protected $fillable = [
+        'patrol_id',
         'temuan',
         'keterangan',
         'dokumentasi',
         'perbaikan',
         'target',
-        'patrol_id',
-        'divisi_id',
         'user_id',
         'dokumentasi',
         'status',
@@ -30,12 +29,8 @@ class Perbaikan extends Model
     {
         return $this->belongsTo(Patrol::class, 'patrol_id', 'patrol_id');
     }
-    public function divisi()
-    {
-        return $this->belongsTo(Divisi::class, 'divisi_id', 'divisi_id');
-    }
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_idid'); // 'id' adalah primary key di tabel users
+        return $this->belongsTo(User::class, 'user_id', 'user_id'); // 'id' adalah primary key di tabel users
     }
 }

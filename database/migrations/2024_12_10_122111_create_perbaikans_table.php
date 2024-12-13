@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('patrol_id')->index();
             $table->string('temuan')->nullable();
             $table->text('keterangan')->nullable();
+            $table->unsignedBigInteger('user_id')->index()->nullable();
             $table->text('perbaikan')->nullable();
             $table->date('target')->nullable();
             $table->enum('status', ['Setuju Semua', 'Setuju Admin', 'Belum Dicek', 'Proses', 'Selesai', 'Lolos Admin', 'Lolos Semua', 'Ditolak Admin', 'Ditolak Management','Batal Admin', 'Batal Management']);
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('patrol_id')->references('patrol_id')->on('patrols');
+            $table->foreign('user_id')->references('user_id')->on('users');
         });
     }
 

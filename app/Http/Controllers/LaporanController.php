@@ -93,6 +93,7 @@ class LaporanController extends Controller
         $divisi = Divisi::all();
         $nama = '';
         $tim = '';
+        $pic = '';
         foreach ($user as $d) {
             if ($d->user_id == $patrol->user_id) {
                 $nama = $d->name;
@@ -147,56 +148,99 @@ class LaporanController extends Controller
         $user = User::find($patrol->user_id);
         $divisi = Divisi::find($patrol->divisi_id);
 
+        $nama = [];
+        $data = Perbaikan::all();
+        $us = User::all();
+        foreach ($data as $key => $value) {
+            foreach ($us as $d) {
+                if ($d->user_id == $value->user_id) {
+                    $nama[$key] = $d->name;
+                }
+            }
+        }
+        // dd($nama);
+     
         // Judul Laporan
-        $sheet->setCellValue('A1', 'Unit Kerja: '. $user->name);
-        $sheet->mergeCells('A1:C1');
-        $sheet->setCellValue('A2', 'Tanggal Safety Patrol: '. $patrol->tanggal );
-        $sheet->mergeCells('A2:C2');
-        $sheet->setCellValue('D1', 'Tim Inspeksi: '. $divisi->nama);
-        $sheet->mergeCells('D1:F1');
-        $sheet->mergeCells('D2:F2');
-
+        $sheet->setCellValue('A1', 'Unit Kerja: ' . $user->name);
+        $sheet->mergeCells('A1:D1');
+        $sheet->setCellValue('A2', 'Tanggal Safety Patrol: ' . $patrol->tanggal);
+        $sheet->mergeCells('A2:D2');
+        $sheet->setCellValue('E1', 'Tim Inspeksi: ' . $divisi->nama);
+        $sheet->mergeCells('E1:H1');
+    
         // Judul Kolom
         $sheet->setCellValue('A6', 'No');
-        $sheet->setCellValue('B6', 'Temuan & Dokumentasi');
-        $sheet->setCellValue('C6', 'Rekomendasi Perbaikan');
-        $sheet->setCellValue('D6', 'PIC');
-        $sheet->setCellValue('E6', 'Target');
-        $sheet->setCellValue('F6', 'Status');
-
-        $perbaikan = Perbaikan::all();
+        $sheet->setCellValue('B6', 'Dokumentasi Temuan');
+        $sheet->setCellValue('C6', 'Keterangan Temuan');
+        $sheet->setCellValue('D6', 'Rekomendasi Perbaikan');
+        $sheet->setCellValue('E6', 'PIC ');
+        $sheet->setCellValue('F6', 'Target');
+        $sheet->setCellValue('G6', 'Status');
+        $sheet->setCellValue('H6', 'Dokumentasi');
+    
+        $perbaikan = Perbaikan::where('patrol_id', $id)->get();
         $row = 7;
-
+    
         foreach ($perbaikan as $index => $item) {
             $sheet->setCellValue('A' . $row, $index + 1);
-            $sheet->setCellValue('C' . $row, $item->perbaikan);
-            $sheet->setCellValue('D' . $row, $divisi->name);
-            $sheet->setCellValue('E' . $row, $item->target);
-            $sheet->setCellValue('F' . $row, $item->status);
-
-            $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
-            $drawing->setName('Temuan');
-            $drawing->setPath(public_path('storage/' . $item->temuan)); 
-            $drawing->setHeight(100);
-            $drawing->setCoordinates('B' . $row);
-            $drawing->setWorksheet($sheet);
-
+            $sheet->setCellValue('C' . $row, $item->keterangan ?? '-'); // Default jika kosong
+            $sheet->setCellValue('D' . $row, $item->perbaikan ?? '-'); // Default jika kosong
+            $sheet->setCellValue('E' . $row, $nama[$index] ?? '-');
+            $sheet->setCellValue('F' . $row, $item->target ?? '-'); // Default jika kosong
+            $sheet->setCellValue('G' . $row, $item->status ?? '-'); // Default jika kosong
+        
+            // Dokumentasi Temuan
+            if (!empty($item->temuan)) {
+                $temuanPath = storage_path('app/public/' . $item->temuan);
+                if (file_exists($temuanPath)) {
+                    $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+                    $drawing->setName('Temuan');
+                    $drawing->setPath($temuanPath);
+                    $drawing->setHeight(100);
+                    $drawing->setCoordinates('B' . $row);
+                    $drawing->setWorksheet($sheet);
+                } else {
+                    $sheet->setCellValue('B' . $row, 'Gambar tidak ditemukan');
+                }
+            } else {
+                $sheet->setCellValue('B' . $row, 'Dokumentasi kosong');
+            }
+        
+            // Dokumentasi Perbaikan
+            if (!empty($item->dokumentasi)) {
+                $dokumentasiPath = storage_path('app/public/' . $item->dokumentasi);
+                if (file_exists($dokumentasiPath)) {
+                    $drawing = new \PhpOffice\PhpSpreadsheet\Worksheet\Drawing();
+                    $drawing->setName('Dokumentasi');
+                    $drawing->setPath($dokumentasiPath);
+                    $drawing->setHeight(100);
+                    $drawing->setCoordinates('H' . $row);
+                    $drawing->setWorksheet($sheet);
+                } else {
+                    $sheet->setCellValue('H' . $row, 'Gambar tidak ditemukan');
+                }
+            } else {
+                $sheet->setCellValue('H' . $row, 'Dokumentasi kosong');
+            }
+        
             $row++;
         }
-
-        foreach (range('A', 'F') as $column) {
+        
+    
+        foreach (range('A', 'H') as $column) {
             $sheet->getColumnDimension($column)->setAutoSize(true);
         }
-
+    
         $writer = new Xlsx($spreadsheet);
-
+    
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="laporan_keselamatan.xlsx"');
         header('Cache-Control: max-age=0');
-
+    
         $writer->save('php://output');
         exit;
     }
+    
     public function print(Request $request, $id)
     {
         $data = $this->prepareData($id);

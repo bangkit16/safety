@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Http\Requests\UserRequest;
+use App\Models\Divisi;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -53,8 +54,9 @@ class UserController extends Controller
         }
 
         $role = Role::all();
+        $divisi = Divisi::all();
 
-        return view('admin.users.index', compact('data', 'role', 'sortBy', 'order'));
+        return view('admin.users.index', compact('data', 'role', 'divisi', 'sortBy', 'order'));
     }
 
     public function store(Request $request)
@@ -65,6 +67,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email', // Pastikan email juga unique
             'password' => 'required|string|confirmed|min:6', // Minimum password 6 karakter
             'role_id' => 'required|exists:roles,role_id',
+            'divisi_id' => 'required|exists:divisis,divisi_id',
         ]);
 
         // Create a new role (or user, jika ini untuk user)
@@ -73,6 +76,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password), // Hash password dengan Hash::make()
             'role_id' => $request->role_id,
+            'divisi_id' => $request->divisi_id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -85,6 +89,7 @@ class UserController extends Controller
             'edit_name'    => 'required|string|max:255',
             'edit_email' => 'required|email',
             'edit_role_id'    => 'required|exists:roles,role_id',
+            'edit_divisi_id'    => 'required|exists:divisis,divisi_id',
         ]);
 
         $user = User::findOrFail($id);
@@ -93,6 +98,7 @@ class UserController extends Controller
             'name' =>$request->edit_name,
             'email' =>$request->edit_email,
             'role_id'   => $request->edit_role_id,
+            'divisi_id'   => $request->edit_divisi_id,
             'updated_at'     => now(),
         ]);
         return redirect()->route('user.index')->withStatus(__('User berhasil diperbaharui.'));        

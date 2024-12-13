@@ -39,7 +39,7 @@
                         <table class="table table-responsive-xl" style="width: 100%" id="">
                             <thead class="text-primary ">
                                 <tr>
-                                    <th scope="col" colspan="2">
+                                    <th scope="col" class="text-center" colspan="2">
                                         <span style="cursor: pointer;"
                                             onclick="window.location.href='{{ request()->fullUrlWithQuery(['sort_by' => 'keterangan', 'order' => $order === 'asc' ? 'desc' : 'asc']) }}'">
                                             Keterangan Temuan
@@ -66,8 +66,8 @@
                                             @endif
                                         </span>
                                     </th>
-                                    <th scope="col">Temuan Patroli</th>
-                                    <th scope="col">Rekomendasi Perbaikan</th>
+                                    <th scope="col">PIC</th>
+                                    <th scope="col">Dokumentasi Perbaikan</th>
                                     <th scope="col" class="text-center">Status</th>
                                     <th scope="col"></th>
                                 </tr>
@@ -86,8 +86,15 @@
                                         <td>
                                             {{ $d->target }}
                                         </td>
+                                        <td>
+                                            @foreach ($user as $item)
+                                                @if ($item->user_id == $d->user_id)
+                                                {{ $item->name }}
+                                                @endif
+                                            @endforeach
+                                        </td>
                                         <td> <img src="{{ asset('storage/' . $d->dokumentasi) }}"
-                                                alt="{{ $d->dokumentasi }}" class="img-fluid" style="max-width: 200px">
+                                                alt="Dokumentasi" class="img-fluid" style="max-width: 200px">
                                         </td>
                                         <td>
                                             @switch($d->status)
@@ -145,6 +152,7 @@
                                                                 data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                 data-keterangan="{{ $d->keterangan }}"
                                                                 data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-user="{{ $d->user_id}}"
                                                                 data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                 data-tanggal="{{ $d->target }}">
                                                                 Show
@@ -156,7 +164,7 @@
                                                                     data-keterangan="{{ $d->keterangan }}"
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
-                                                                    data-tanggal="{{ $d->target }}"
+                                                                    data-tanggal="{{ $d->target }}" data-user="{{ $d->user_id}}"
                                                                     data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
                                                                 <a class="dropdown-item admin-button" data-bs-toggle="modal"
                                                                     data-bs-target="#approveadmin"
@@ -176,7 +184,7 @@
                                                                 data-bs-target="#showPatrolModal"
                                                                 data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                 data-keterangan="{{ $d->keterangan }}"
-                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                 data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                 data-tanggal="{{ $d->target }}">
                                                                 Show
@@ -186,7 +194,7 @@
                                                                     data-bs-target="#editperbaikan" data-id="{{ $d->patrol_id }}"
                                                                     data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                     data-keterangan="{{ $d->keterangan }}"
-                                                                    data-perbaikan="{{ $d->perbaikan }}"
+                                                                    data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
                                                                     data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
@@ -210,7 +218,7 @@
                                                                 data-bs-target="#showPatrolModal"
                                                                 data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                 data-keterangan="{{ $d->keterangan }}"
-                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                 data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                 data-tanggal="{{ $d->target }}">
                                                                 Show
@@ -222,7 +230,7 @@
                                                                     data-keterangan="{{ $d->keterangan }}"
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
-                                                                    data-tanggal="{{ $d->target }}"
+                                                                    data-tanggal="{{ $d->target }}" data-user="{{ $d->user_id}}"
                                                                     data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
                                                                 <a class="dropdown-item perbaikan-button" data-bs-toggle="modal"
                                                                     data-bs-target="#addperbaikan"
@@ -250,7 +258,7 @@
                                                                 data-bs-target="#showPatrolModal"
                                                                 data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                 data-keterangan="{{ $d->keterangan }}"
-                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                 data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                 data-tanggal="{{ $d->target }}">
                                                                 Show
@@ -262,7 +270,7 @@
                                                                     data-keterangan="{{ $d->keterangan }}"
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
-                                                                    data-tanggal="{{ $d->target }}"
+                                                                    data-tanggal="{{ $d->target }}" data-user="{{ $d->user_id}}"
                                                                     data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
                                                                 <a class="dropdown-item dokum-button" data-bs-toggle="modal"
                                                                     data-bs-target="#dokumModal" data-id="{{ $d->perbaikan_id }}"
@@ -292,7 +300,7 @@
                                                                 data-bs-target="#showPatrolModal"
                                                                 data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                 data-keterangan="{{ $d->keterangan }}"
-                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                 data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                 data-tanggal="{{ $d->target }}">
                                                                 Show
@@ -303,7 +311,7 @@
                                                                     data-id="{{ $d->patrol_id }}"
                                                                     data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                     data-keterangan="{{ $d->keterangan }}"
-                                                                    data-perbaikan="{{ $d->perbaikan }}"
+                                                                    data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
                                                                     data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
@@ -325,7 +333,7 @@
                                                                 data-bs-target="#showPatrolModal"
                                                                 data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                 data-keterangan="{{ $d->keterangan }}"
-                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                 data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                 data-tanggal="{{ $d->target }}">
                                                                 Show
@@ -336,7 +344,7 @@
                                                                     data-id="{{ $d->patrol_id }}"
                                                                     data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                     data-keterangan="{{ $d->keterangan }}"
-                                                                    data-perbaikan="{{ $d->perbaikan }}"
+                                                                    data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
                                                                     data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
@@ -360,7 +368,7 @@
                                                                 data-bs-target="#showPatrolModal"
                                                                 data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                 data-keterangan="{{ $d->keterangan }}"
-                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                 data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                 data-tanggal="{{ $d->target }}">
                                                                 Show
@@ -373,7 +381,7 @@
                                                                     data-keterangan="{{ $d->keterangan }}"
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
-                                                                    data-tanggal="{{ $d->target }}"
+                                                                    data-tanggal="{{ $d->target }}" data-user="{{ $d->user_id}}"
                                                                     data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
                                                             @endif
                                                         @break
@@ -384,9 +392,9 @@
                                                                 data-bs-target="#showPatrolModal"
                                                                 data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                 data-keterangan="{{ $d->keterangan }}"
-                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                 data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
-                                                                data-tanggal="{{ $d->target }}">
+                                                                data-tanggal="{{ $d->target }}"> 
                                                                 Show
                                                             </a>
                                                         @break
@@ -397,7 +405,7 @@
                                                                 data-bs-target="#showPatrolModal"
                                                                 data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                 data-keterangan="{{ $d->keterangan }}"
-                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                 data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                 data-tanggal="{{ $d->target }}">
                                                                 Show
@@ -410,7 +418,7 @@
                                                                 data-bs-target="#showPatrolModal"
                                                                 data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                 data-keterangan="{{ $d->keterangan }}"
-                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                 data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                 data-tanggal="{{ $d->target }}">
                                                                 Show
@@ -423,7 +431,7 @@
                                                                 data-bs-target="#showPatrolModal"
                                                                 data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                 data-keterangan="{{ $d->keterangan }}"
-                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}" data-user="{{ $d->user_id}}"
                                                                 data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                 data-tanggal="{{ $d->target }}">
                                                                 Show
@@ -496,6 +504,26 @@
                                 @if ($errors->has('patrol_id'))
                                     <span class="invalid-feedback" role="alert">
                                         {{ $errors->first('patrol_id') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="form-group">
+                                <label for="user_id" class="col-form-label">PIC Perbaikan:</label>
+                                <select name="user_id" id="user_id"
+                                    class="form-control{{ $errors->has('user_id') ? ' is-invalid' : '' }}"
+                                    style="height: 50px;">
+                                    <option value="">- Select User -</option>
+                                    @foreach ($user as $r)
+                                        <option value="{{ $r->user_id }}"
+                                            {{ old('user_id') == $r->user_id ? 'selected' : '' }}>
+                                            {{ $r->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('user_id'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('user_id') }}
                                     </span>
                                 @endif
                             </div>
@@ -592,6 +620,26 @@
                                 @if ($errors->has('edit_patrol_id'))
                                     <span class="invalid-feedback" role="alert">
                                         {{ $errors->first('edit_patrol_id') }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit-user_id" class="col-form-label">PIC Perbaikan:</label>
+                                <select name="edit_user_id" id="edit-user-id"
+                                    class="form-control{{ $errors->has('edit_user_id') ? ' is-invalid' : '' }}"
+                                    style="height: 50px;">
+                                    <option value="">- Select User -</option>
+                                    @foreach ($user as $r)
+                                        <option value="{{ $r->user_id }}"
+                                            {{ old('edit_user_id') == $r->user_id ? 'selected' : '' }}>
+                                            {{ $r->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @if ($errors->has('edit_user_id'))
+                                    <span class="invalid-feedback" role="alert">
+                                        {{ $errors->first('edit_user_id') }}
                                     </span>
                                 @endif
                             </div>
@@ -722,6 +770,10 @@
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <strong>Perbaikan:</strong>
                                         <span id="showPerbaikan" class="text-muted"></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <strong>PIC:</strong>
+                                        <span id="showUser" class="text-muted"></span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <strong>Target:</strong>
@@ -1025,7 +1077,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Check and show the editlayanan modal if there are errors for edit layanan
             if (
-                {{ $errors->has('patrol_id') || $errors->has('keterangan') || $errors->has('perbaikan') || $errors->has('target') ? 'true' : 'false' }}
+                {{ $errors->has('patrol_id') || $errors->has('keterangan') || $errors->has('perbaikan') || $errors->has('target') || $errors->has('user_id') ? 'true' : 'false' }}
             ) {
                 var addperbaikanModal = new bootstrap.Modal(document.getElementById('addperbaikan'));
                 var url = localStorage.getItem('Url');
@@ -1042,7 +1094,8 @@
                 $errors->has('edit_perbaikan') ||
                 $errors->has('edit_temuan') ||
                 $errors->has('edit_keterangan') ||
-                $errors->has('edit_target')
+                $errors->has('edit_target') ||
+                $errors->has('edit_user_id')
                     ? 'true'
                     : 'false' }}
             ) {
@@ -1094,6 +1147,7 @@
                     var patrolPerbaikan = this.getAttribute('data-perbaikan');
                     var patrolDokum = this.getAttribute('data-dokumentasi');
                     var patrolTarget = this.getAttribute('data-tanggal');
+                    var patrolUser = this.getAttribute('data-user');
                     var actionUrl = this.getAttribute('data-url');
                     localStorage.setItem('Url', actionUrl);
                     localStorage.setItem('Image1', patrolTemuan);
@@ -1106,6 +1160,7 @@
                     $('#edit-keterangan').val(patrolKeterangan);
                     $('#edit-perbaikan').val(patrolPerbaikan);
                     $('#edit-target').val(patrolTarget);
+                    $('#edit-user-id').val(patrolUser);
 
                     // Update gambar ikon jika ada
                     var iconImage = $('#current-icon');
@@ -1314,11 +1369,13 @@
                     const dokumentasi = this.getAttribute('data-dokumentasi');
                     const perbaikan = this.getAttribute('data-perbaikan');
                     const target = this.getAttribute('data-tanggal');
+                    const user = this.getAttribute('data-user');
 
                     // Isi data ke modal
                     document.getElementById('showKeterangan').innerText = keterangan;
                     document.getElementById('showPerbaikan').innerText = perbaikan;
                     document.getElementById('showTarget').innerText = target;
+                    document.getElementById('showUser').innerText = user;
 
                     const dokumentasiImg = document.getElementById('showDokumentasi');
                     const temuanImg = document.getElementById('showTemuan');

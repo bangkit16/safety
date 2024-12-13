@@ -107,6 +107,7 @@ class PerbaikanController extends Controller
             'dokumentasi' => '',
             'status' => 'Belum Dicek',
             'revisi' => '',
+            'user_id' => null,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -129,8 +130,6 @@ class PerbaikanController extends Controller
         return redirect()->route('perbaikan.index')->withStatus('Perbaikan berhasil ditambahkan.');
     }
 
-
-
     public function update(Request $request, $id)
     {
         // Validasi input
@@ -140,6 +139,7 @@ class PerbaikanController extends Controller
             'edit_keterangan' => 'required',
             'edit_perbaikan' => 'required',
             'edit_target' => 'required|date',
+            'edit_user_id' => 'required|exists:users,user_id',
             'edit_dokumentasi' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -151,6 +151,7 @@ class PerbaikanController extends Controller
             'keterangan' => $request->edit_keterangan,
             'perbaikan' => $request->edit_perbaikan,
             'target' => $request->edit_target,
+            'user_id' => $request->edit_user_id,
             'updated_at' => now(),
         ];
 
@@ -185,6 +186,7 @@ class PerbaikanController extends Controller
         // Validasi input
         $request->validate([
             'patrol_id' => 'required|exists:patrols,patrol_id',
+            'user_id' => 'required|exists:users,user_id',
             'keterangan' => 'required',
             'perbaikan' => 'required',
             'target' => 'required|date',
@@ -192,6 +194,7 @@ class PerbaikanController extends Controller
 
         $perbaikan = Perbaikan::findOrFail($id);
         $perbaikan->update([
+            'user_id' => $request->user_id,
             'perbaikan' => $request->perbaikan,
             'target' => $request->target,
             'status' => 'Proses',

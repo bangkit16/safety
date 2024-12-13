@@ -156,7 +156,13 @@
                             </td>
                             <td>{{ $row->keterangan }}</td>
                             <td>{{ $row->perbaikan }}</td>
-                            <td>{{ $tim }}</td>
+                            <td>
+                                @foreach ($user as $i)
+                                    @if ($i->user_id == $row->user_id)
+                                        {{ $i->name }}
+                                    @endif
+                                @endforeach
+                            </td>
                             <td>{{ $row->target }}</td>
                             <td>
                                 <img src="{{ asset('storage/' . $row->dokumentasi) }}" alt="Dokumentasi">
@@ -205,4 +211,5 @@
         </div>
     </div>
 </body>
+
 </html>

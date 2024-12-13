@@ -100,7 +100,7 @@
                                                     <a class="dropdown-item edit-button" data-bs-toggle="modal"
                                                         data-bs-target="#editUser" data-id="{{ $d->user_id }}"
                                                         data-name="{{ $d->name }}" data-email="{{ $d->email }}"
-                                                        data-role="{{ $d->role_id }}"
+                                                        data-role="{{ $d->role_id }}" data-divisi="{{$d->divisi_id}}"
                                                         data-url="{{ url('user/' . $d->user_id) }}">Edit</a>
                                                     <a class="dropdown-item delete-button" data-bs-toggle="modal"
                                                         data-bs-target="#deleteModal" data-id="{{ $d->user_id }}"
@@ -207,7 +207,8 @@
                                 style="height: 50px">
                                 <option value="">- Select Role -</option>
                                 @foreach ($role as $r)
-                                    <option value="{{ $r->role_id }}" {{ old('role_id') == $r->role_id ? 'selected' : '' }}>
+                                    <option value="{{ $r->role_id }}"
+                                        {{ old('role_id') == $r->role_id ? 'selected' : '' }}>
                                         {{ $r->role_name }}
                                     </option>
                                 @endforeach
@@ -215,6 +216,26 @@
                             @if ($errors->has('role_id'))
                                 <span class="invalid-feedback" role="alert">
                                     {{ $errors->first('role_id') }}
+                                </span>
+                            @endif
+                        </div>
+                        <!-- Role User -->
+                        <div class="form-group{{ $errors->has('divisi_id') ? ' has-danger' : '' }}">
+                            <label for="divisi_id" class="col-form-label">Name Divisi:</label>
+                            <select name="divisi_id" id="divisi_id"
+                                class="form-control{{ $errors->has('divisi_id') ? ' is-invalid' : '' }}"
+                                style="height: 50px">
+                                <option value="">- Select Divisi -</option>
+                                @foreach ($divisi as $r)
+                                    <option value="{{ $r->divisi_id }}"
+                                        {{ old('divisi_id') == $r->divisi_id ? 'selected' : '' }}>
+                                        {{ $r->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('divisi_id'))
+                                <span class="invalid-feedback" role="alert">
+                                    {{ $errors->first('divisi_id') }}
                                 </span>
                             @endif
                         </div>
@@ -287,6 +308,27 @@
                                 </span>
                             @endif
                         </div>
+
+                        <!-- Role User -->
+                        <div class="form-group{{ $errors->has('edit_divisi_id') ? ' has-danger' : '' }}">
+                            <label for="edit-divisi-id" class="col-form-label">Name Divisi: </label>
+                            <select name="edit_divisi_id"
+                                class="form-control {{ $errors->has('edit_divisi_id') ? ' is-invalid' : '' }}"
+                                id="edit-divisi-id" style="height: 50px">
+                                <option value="">- Divisi -</option>
+                                @foreach ($divisi as $p)
+                                    <option value="{{ $p->divisi_id }}"
+                                        {{ old('edit_divisi_id') == $p->divisi_id ? 'selected' : '' }}>
+                                        {{ $p->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('edit_divisi_id'))
+                                <span class="invalid-feedback" role="alert">
+                                    {{ $errors->first('edit_divisi_id') }}
+                                </span>
+                            @endif
+                        </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="text-white btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -333,13 +375,13 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Check and show the editlayanan modal if there are errors for edit layanan
         if (
-            {{ $errors->has('name') || $errors->has('email') || $errors->has('password') || $errors->has('role_id') ? 'true' : 'false' }}
+            {{ $errors->has('name') || $errors->has('email') || $errors->has('password') || $errors->has('role_id') || $errors->has('divisi_id') ? 'true' : 'false' }}
         ) {
             var adduserModal = new bootstrap.Modal(document.getElementById('adduser'));
             adduserModal.show();
         }
         if (
-            {{ $errors->has('edit_name') || $errors->has('edit_role_id') ? 'true' : 'false' }}
+            {{ $errors->has('edit_name') || $errors->has('edit_role_id') ||  $errors->has('edit_divisi_id') ? 'true' : 'false' }}
         ) {
             var edituserModal = new bootstrap.Modal(document.getElementById('editUser'));
             var url = localStorage.getItem('Url');
@@ -359,6 +401,7 @@
                 var userId = this.getAttribute('data-id');
                 var userName = this.getAttribute('data-name');
                 var userRole = this.getAttribute('data-role');
+                var userDivisi = this.getAttribute('data-divisi');
                 var userEmail = this.getAttribute('data-email');
                 var actionUrl = this.getAttribute('data-url');
                 localStorage.setItem('Url', actionUrl);
@@ -369,6 +412,7 @@
                 $('#edit-name').val(userName);
                 $('#edit-email').val(userEmail);
                 $('#edit-role-id').val(userRole);
+                $('#edit-divisi-id').val(userDivisi);
 
                 // Atur action form untuk update
                 $('#editUserForm').attr('action', actionUrl);

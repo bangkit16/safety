@@ -180,7 +180,7 @@
 
                         <!-- Name role -->
                         <div class="form-group">
-                            <label for="edit-nama" class="col-form-label">Name Role: </label>
+                            <label for="edit-nama" class="col-form-label">Name Divisi: </label>
                             <input type="text" name="edit_nama" id="edit-nama"
                                 class="form-control{{ $errors->has('edit_nama') ? ' is-invalid' : '' }}"
                                 placeholder="Name Divisi" value="{{ old('edit_nama') }}">

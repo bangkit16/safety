@@ -47,12 +47,12 @@ Route::group(['middleware' => 'auth'], function () {
 
 	Route::group(['middleware' => ['role:1,3']], function () {
 		Route::resource('patrol', 'App\Http\Controllers\PatrolController', ['except' => ['show']]);
-		Route::resource('perbaikan', 'App\Http\Controllers\PerbaikanController', ['except' => ['show']]);
 		Route::put('/perbaikan/form/{id}', [PerbaikanController::class, 'FormPerbaikan'])->name('perbaikan.form');
 		Route::put('/perbaikan/dokumentasi/{id}', [PerbaikanController::class, 'dokumentasi'])->name('perbaikan.dokumentasi');
 	});
 
-	Route::group(['middleware' => ['role:1,2,3,4']], function () {		
+	Route::group(['middleware' => ['role:1,2,3,4']], function () {	
+		Route::resource('perbaikan', 'App\Http\Controllers\PerbaikanController', ['except' => ['show']]);	
 		Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
 		Route::put('profile/{id}', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
 		Route::put('profile/password/{id}', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);

@@ -208,7 +208,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="text-white btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="text-white btn btn-primary">Update Tanda Tangan</button>
+                    <button type="submit" class="text-white btn btn-primary">Update Divisi</button>
                 </div>
                 </form>
             </div>

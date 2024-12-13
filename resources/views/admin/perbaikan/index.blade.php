@@ -111,8 +111,23 @@
                                                         {{ $d->status }}</div>
                                                 @break
 
-                                                @default
+                                                @case('Setuju Semua')
                                                     <div class="rounded bg-success text-center p-1 fw-bolder" style="color: white">
+                                                        {{ $d->status }}</div>
+                                                @break
+
+                                                @case('Lolos Semua')
+                                                    <div class="rounded bg-success text-center p-1 fw-bolder" style="color: white">
+                                                        {{ $d->status }}</div>
+                                                @break
+
+                                                @case('Selesai')
+                                                    <div class="rounded bg-success text-center p-1 fw-bolder" style="color: white">
+                                                        {{ $d->status }}</div>
+                                                @break
+
+                                                @default
+                                                    <div class="rounded bg-danger text-center p-1 fw-bolder" style="color: white">
                                                         {{ $d->status }}</div>
                                             @endswitch
                                         </td>
@@ -148,6 +163,11 @@
                                                                     data-url="{{ url('patrol/' . $d->patrol_id . '/admin') }}">
                                                                     Setuju Admin
                                                                 </a>
+                                                                <a class="dropdown-item admin-tolak" data-bs-toggle="modal"
+                                                                    data-bs-target="#tolakadmin"
+                                                                    data-url="{{ url('patrol/' . $d->patrol_id . '/admin/tolak') }}">
+                                                                    Tolak Admin
+                                                                </a>
                                                             @endif
                                                         @break
 
@@ -176,6 +196,11 @@
                                                                     data-bs-target="#approvemanager"
                                                                     data-url="{{ url('patrol/' . $d->patrol_id . '/manager') }}">
                                                                     Setuju Management
+                                                                </a>
+                                                                <a class="dropdown-item manager-tolak" data-bs-toggle="modal"
+                                                                    data-bs-target="#tolakmanager"
+                                                                    data-url="{{ url('patrol/' . $d->patrol_id . '/manager/tolak') }}">
+                                                                    Tolak Management
                                                                 </a>
                                                             @endif
                                                         @break
@@ -239,11 +264,15 @@
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
                                                                     data-url="{{ url('perbaikan/' . $d->patrol_id) }}">Edit</a>
-                                                                    <a class="dropdown-item dokum-button" data-bs-toggle="modal"
+                                                                <a class="dropdown-item dokum-button" data-bs-toggle="modal"
                                                                     data-bs-target="#dokumModal" data-id="{{ $d->perbaikan_id }}"
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-url="{{ url('perbaikan/dokumentasi/' . $d->perbaikan_id) }}">Dokumentasi
                                                                     Perbaikan</a>
+                                                                <a class="dropdown-item revisi-button" data-bs-toggle="modal"
+                                                                    data-bs-target="#revisiModal"
+                                                                    data-id="{{ $d->perbaikan_id }}"
+                                                                    data-revisi="{{ $d->revisi }}">Lihat Revisi</a>
                                                             @endif
                                                             @if (auth()->user()->role_id == 3)
                                                                 <a class="dropdown-item dokum-button" data-bs-toggle="modal"
@@ -251,6 +280,10 @@
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-url="{{ url('perbaikan/dokumentasi/' . $d->perbaikan_id) }}">Dokumentasi
                                                                     Perbaikan</a>
+                                                                <a class="dropdown-item revisi-button" data-bs-toggle="modal"
+                                                                    data-bs-target="#revisiModal"
+                                                                    data-id="{{ $d->perbaikan_id }}"
+                                                                    data-revisi="{{ $d->revisi }}">Lihat Revisi</a>
                                                             @endif
                                                         @break
 
@@ -266,7 +299,8 @@
                                                             </a>
                                                             @if (auth()->user()->role_id == 1)
                                                                 <a class="dropdown-item edit-button" data-bs-toggle="modal"
-                                                                    data-bs-target="#editperbaikan" data-id="{{ $d->patrol_id }}"
+                                                                    data-bs-target="#editperbaikan"
+                                                                    data-id="{{ $d->patrol_id }}"
                                                                     data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
                                                                     data-keterangan="{{ $d->keterangan }}"
                                                                     data-perbaikan="{{ $d->perbaikan }}"
@@ -277,6 +311,11 @@
                                                                     data-bs-target="#setujuadmin"
                                                                     data-url="{{ url('perbaikan/' . $d->patrol_id . '/admin') }}">
                                                                     Approve Admin
+                                                                </a>
+                                                                <a class="dropdown-item admin-batal" data-bs-toggle="modal"
+                                                                    data-bs-target="#bataladmin"
+                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id . '/admin/tolak') }}">
+                                                                    Batal Admin
                                                                 </a>
                                                             @endif
                                                         @break
@@ -308,6 +347,11 @@
                                                                     data-url="{{ url('perbaikan/' . $d->patrol_id . '/manager') }}">
                                                                     Approve Management
                                                                 </a>
+                                                                <a class="dropdown-item manager-batal" data-bs-toggle="modal"
+                                                                    data-bs-target="#batalmanager"
+                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id . '/manager/tolak') }}">
+                                                                    Batal Management
+                                                                </a>
                                                             @endif
                                                         @break
 
@@ -332,6 +376,58 @@
                                                                     data-tanggal="{{ $d->target }}"
                                                                     data-url="{{ url('perbaikan/' . $d->patrol_id) }}">Edit</a>
                                                             @endif
+                                                        @break
+
+                                                        <!-- Status: Batal Admin -->
+                                                        @case('Ditolak Admin')
+                                                            <a class="dropdown-item show-button" data-bs-toggle="modal"
+                                                                data-bs-target="#showPatrolModal"
+                                                                data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
+                                                                data-keterangan="{{ $d->keterangan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
+                                                                data-tanggal="{{ $d->target }}">
+                                                                Show
+                                                            </a>
+                                                        @break
+
+                                                        <!-- Status: Ditolak Management -->
+                                                        @case('Ditolak Management')
+                                                            <a class="dropdown-item show-button" data-bs-toggle="modal"
+                                                                data-bs-target="#showPatrolModal"
+                                                                data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
+                                                                data-keterangan="{{ $d->keterangan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
+                                                                data-tanggal="{{ $d->target }}">
+                                                                Show
+                                                            </a>
+                                                        @break
+
+                                                        <!-- Status: Batal Admin -->
+                                                        @case('Batal Admin')
+                                                            <a class="dropdown-item show-button" data-bs-toggle="modal"
+                                                                data-bs-target="#showPatrolModal"
+                                                                data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
+                                                                data-keterangan="{{ $d->keterangan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
+                                                                data-tanggal="{{ $d->target }}">
+                                                                Show
+                                                            </a>
+                                                        @break
+
+                                                        <!-- Status: Batal Management -->
+                                                        @case('Batal Management')
+                                                            <a class="dropdown-item show-button" data-bs-toggle="modal"
+                                                                data-bs-target="#showPatrolModal"
+                                                                data-temuan="{{ $d->temuan ? asset('storage/' . $d->temuan) : '' }}"
+                                                                data-keterangan="{{ $d->keterangan }}"
+                                                                data-perbaikan="{{ $d->perbaikan }}"
+                                                                data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
+                                                                data-tanggal="{{ $d->target }}">
+                                                                Show
+                                                            </a>
                                                         @break
                                                     @endswitch
                                                 </div>
@@ -410,7 +506,8 @@
                             <div class="">
                                 <label for="keterangan" class="col-form-label">Keterangan Temuan: </label>
                                 <textarea type="text" name="keterangan" id="keterangan"
-                                    class="form-control{{ $errors->has('keterangan') ? ' is-invalid' : '' }}" placeholder="Description Feedback" readonly>{{ old('keterangan') }}</textarea>
+                                    class="form-control{{ $errors->has('keterangan') ? ' is-invalid' : '' }}" placeholder="Description Feedback"
+                                    readonly>{{ old('keterangan') }}</textarea>
                                 @if ($errors->has('keterangan'))
                                     <span class="invalid-feedback" role="alert">
                                         {{ $errors->first('keterangan') }}
@@ -647,6 +744,32 @@
             </div>
         </div>
 
+        <div class="modal fade" id="revisiModal" tabindex="-1" aria-labelledby="revisiModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content shadow-lg border-0">
+                    <div class="modal-header text-white">
+                        <h5 class="modal-title" id="revisiModalLabel"><i class="fas fa-info-circle me-2"></i>Detail
+                            Revisi</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Revisi:</strong>
+                                <span id="showRevisi" class="text-muted"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Tutup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Modal Edit User -->
         <div class="modal fade" id="dokumModal" tabindex="-1" aria-labelledby="dokumModalTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -722,6 +845,29 @@
         </div>
 
         <!-- Modal Konfirmasi Approve -->
+        <div class="modal fade" id="tolakadmin" tabindex="-1" aria-labelledby="tolakadminLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tolakadminLabel">Konfirmasi Tolak</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Apakah Anda yakin ingin menolak tindakan ini?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <form id="tolakadminForm" method="POST" action="">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-primary">Ya, Tolak</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Konfirmasi Approve -->
         <div class="modal fade" id="approvemanager" tabindex="-1" aria-labelledby="approvemanagerLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -739,6 +885,29 @@
                             @csrf
                             @method('PUT')
                             <button type="submit" class="btn btn-primary">Ya, Setujui</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Konfirmasi Approve -->
+        <div class="modal fade" id="tolakmanager" tabindex="-1" aria-labelledby="tolakmanagerLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tolakmanagerLabel">Konfirmasi Tolak</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Apakah Anda yakin ingin menolak tindakan ini?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <form id="tolakmanagerForm" method="POST" action="">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-primary">Ya, Tolak</button>
                         </form>
                     </div>
                 </div>
@@ -769,6 +938,34 @@
         </div>
 
         <!-- Modal Konfirmasi Approve -->
+        <div class="modal fade" id="bataladmin" tabindex="-1" aria-labelledby="bataladminLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bataladminLabel">Konfirmasi Penolakan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="bataladminForm" method="POST" action="">
+                        <div class="modal-body">
+                            <p>Apakah Anda yakin ingin menolak tindakan ini?</p>
+                            <div class="mb-3">
+                                <label for="revisi" class="form-label">Alasan Revisi</label>
+                                <textarea class="form-control" name="revisi" id="revisi" rows="5"
+                                    placeholder="Tuliskan alasan penolakan..." required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-primary">Ya, Tolak</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Konfirmasi Approve -->
         <div class="modal fade" id="setujumanager" tabindex="-1" aria-labelledby="setujumanagerLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -787,6 +984,31 @@
                             <button type="submit" class="btn btn-primary">Ya, Setujui</button>
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Konfirmasi Approve -->
+        <div class="modal fade" id="batalmanager" tabindex="-1" aria-labelledby="batalmanagerLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="batalmanagerLabel">Konfirmasi Menolak</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="batalmanagerForm" method="POST" action="">
+                        <div class="modal-body">
+                            <p>Apakah Anda yakin ingin menolak tindakan ini?</p>
+                            <textarea class="form-control" name="revisi" id="revisi" rows="5"
+                                placeholder="Tuliskan alasan penolakan..." required></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-primary">Ya, Tolak</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -942,7 +1164,6 @@
             });
         });
 
-
         document.addEventListener('DOMContentLoaded', function() {
             var editButtons = document.querySelectorAll('.dokum-button');
 
@@ -981,6 +1202,21 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             // Event listener untuk semua tombol dengan class "admin-button"
+            document.querySelectorAll('.admin-tolak').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // Ambil URL dari atribut data-url
+                    const url = this.getAttribute('data-url');
+
+                    // Isi action pada form di dalam modal
+                    const form = document.getElementById('tolakadminForm');
+                    console.log(form, url);
+                    form.setAttribute('action', url);
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listener untuk semua tombol dengan class "admin-button"
             document.querySelectorAll('.manager-button').forEach(function(button) {
                 button.addEventListener('click', function() {
                     // Ambil URL dari atribut data-url
@@ -988,6 +1224,21 @@
 
                     // Isi action pada form di dalam modal
                     const form = document.getElementById('approvemanagerForm');
+                    console.log(form, url);
+                    form.setAttribute('action', url);
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listener untuk semua tombol dengan class "admin-button"
+            document.querySelectorAll('.manager-tolak').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // Ambil URL dari atribut data-url
+                    const url = this.getAttribute('data-url');
+
+                    // Isi action pada form di dalam modal
+                    const form = document.getElementById('tolakmanagerForm');
                     console.log(form, url);
                     form.setAttribute('action', url);
                 });
@@ -1011,6 +1262,21 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             // Event listener untuk semua tombol dengan class "admin-button"
+            document.querySelectorAll('.admin-batal').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // Ambil URL dari atribut data-url
+                    const url = this.getAttribute('data-url');
+
+                    // Isi action pada form di dalam modal
+                    const form = document.getElementById('bataladminForm');
+                    console.log(form, url);
+                    form.setAttribute('action', url);
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listener untuk semua tombol dengan class "admin-button"
             document.querySelectorAll('.manager-setuju').forEach(function(button) {
                 button.addEventListener('click', function() {
                     // Ambil URL dari atribut data-url
@@ -1018,6 +1284,21 @@
 
                     // Isi action pada form di dalam modal
                     const form = document.getElementById('setujumanagerForm');
+                    console.log(form, url);
+                    form.setAttribute('action', url);
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listener untuk semua tombol dengan class "admin-button"
+            document.querySelectorAll('.manager-batal').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // Ambil URL dari atribut data-url
+                    const url = this.getAttribute('data-url');
+
+                    // Isi action pada form di dalam modal
+                    const form = document.getElementById('batalmanagerForm');
                     console.log(form, url);
                     form.setAttribute('action', url);
                 });
@@ -1053,6 +1334,20 @@
                     } else {
                         temuanImg.style.display = "none";
                     }
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.revisi-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // Ambil data dari tombol
+                    const revisi = this.getAttribute('data-revisi');
+
+                    // Isi data ke modal
+                    document.getElementById('showRevisi').innerText = revisi;
+
+                    const dokumentasiImg = document.getElementById('showDokumentasi');
                 });
             });
         });

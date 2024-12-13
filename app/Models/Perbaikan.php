@@ -22,6 +22,7 @@ class Perbaikan extends Model
         'user_id',
         'dokumentasi',
         'status',
+        'revisi',
         'created_at',
         'updated_at',
     ];

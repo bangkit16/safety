@@ -106,6 +106,7 @@ class PerbaikanController extends Controller
             'target' => null,
             'dokumentasi' => '',
             'status' => 'Belum Dicek',
+            'revisi' => '',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -257,6 +258,29 @@ class PerbaikanController extends Controller
         return redirect()->route('perbaikan.index')->withStatus('Status berhasil diubah.');
     }
 
+    public function batalAdmin(Request $request, $id)
+    {
+        $perbaikan = Perbaikan::find($id);
+        $patrol = Patrol::find($perbaikan->patrol_id);
+
+        $perbaikan->update([
+            'status' => 'Ditolak Admin',
+            'revisi' => $request->revisi,
+            'updated_at' => now(),
+        ]);
+
+        // Kirim Notifikasi Email
+        $details = [
+            'tanggal' => now()->toDateTimeString(),
+            'status' => 'Tolak Admin',
+        ];
+        $user = User::where('user_id', $patrol->user_id)->first();
+
+        \Mail::to($user->email,)->send(new \App\Mail\NotifyEmail7($details));
+
+        return redirect()->route('perbaikan.index')->withStatus('Status berhasil diubah.');
+    }
+
     public function approveManager($id)
     {
         $perbaikan = Perbaikan::find($id);
@@ -275,6 +299,28 @@ class PerbaikanController extends Controller
         $user = User::where('user_id', $patrol->user_id)->first();
 
         \Mail::to($user->email,)->send(new \App\Mail\NotifyEmail3($details));
+        return redirect()->route('perbaikan.index')->withStatus('Status berhasil diubah.');
+    }
+
+    public function batalManager(Request $request,$id)
+    {
+        $perbaikan = Perbaikan::find($id);
+        $patrol = Patrol::find($perbaikan->patrol_id);
+
+        $perbaikan->update([
+            'status' => 'Ditolak Management',
+            'revisi' => $request->revisi,
+            'updated_at' => now(),
+        ]);
+
+        // Kirim Notifikasi Email
+        $details = [
+            'tanggal' => now()->toDateTimeString(),
+            'status' => 'Tolak Management',
+        ];
+        $user = User::where('user_id', $patrol->user_id)->first();
+
+        \Mail::to($user->email,)->send(new \App\Mail\NotifyEmail7($details));
         return redirect()->route('perbaikan.index')->withStatus('Status berhasil diubah.');
     }
 
@@ -303,6 +349,28 @@ class PerbaikanController extends Controller
         return redirect()->route('perbaikan.index')->withStatus('Status berhasil diubah.');
     }
 
+    public function tolakAdmin(Request $request, $id)
+    {
+        $perbaikan = Perbaikan::find($id);
+        $patrol = Patrol::find($perbaikan->patrol_id);
+
+        $perbaikan->update([
+            'status' => 'Proses',
+            'revisi' => $request->revisi,
+            'updated_at' => now(),
+        ]);
+
+        $details = [
+            'tanggal' => now()->toDateTimeString(),
+            'status' => 'Batal Admin',
+        ];
+        
+        $user = User::where('user_id', $patrol->user_id)->first();
+                \Mail::to($user->email)->send(new \App\Mail\NotifyEmail8($details));
+
+        return redirect()->route('perbaikan.index')->withStatus('Status berhasil diubah.');
+    }
+
     public function setujuManager($id)
     {
         $perbaikan = Perbaikan::find($id);
@@ -320,6 +388,28 @@ class PerbaikanController extends Controller
         
         $user = User::where('user_id', $patrol->user_id)->first();
                 \Mail::to($user->email)->send(new \App\Mail\NotifyEmail6($details));
+
+        return redirect()->route('perbaikan.index')->withStatus('Status berhasil diubah.');
+    }
+
+    public function tolakManager(Request $request, $id)
+    {
+        $perbaikan = Perbaikan::find($id);
+        $patrol = Patrol::find($perbaikan->patrol_id);
+
+        $perbaikan->update([
+            'status' => 'Proses',
+            'revisi' => $request->revisi,
+            'updated_at' => now(),
+        ]);
+
+        $details = [
+            'tanggal' => now()->toDateTimeString(),
+            'status' => 'Batal Management',
+        ];
+        
+        $user = User::where('user_id', $patrol->user_id)->first();
+                \Mail::to($user->email)->send(new \App\Mail\NotifyEmail8($details));
 
         return redirect()->route('perbaikan.index')->withStatus('Status berhasil diubah.');
     }

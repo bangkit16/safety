@@ -34,11 +34,15 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('divisi', 'App\Http\Controllers\DivisiController', ['except' => ['show']]);
 		Route::put('/patrol/{id}/admin', [PerbaikanController::class, 'approveAdmin'])->name('patrol.approve.admin');
 		Route::put('/perbaikan/{id}/admin', [PerbaikanController::class, 'setujuAdmin'])->name('patrol.setuju.admin');
+		Route::put('/patrol/{id}/admin/tolak', [PerbaikanController::class, 'batalAdmin'])->name('patrol.batal.admin');
+		Route::put('/perbaikan/{id}/admin/tolak', [PerbaikanController::class, 'tolakAdmin'])->name('patrol.tolak.admin');
 	});
 
 	Route::group(['middleware' => ['role:1,2']], function () {
 		Route::put('/patrol/{id}/manager', [PerbaikanController::class, 'approveManager'])->name('patrol.approve.manager');
 		Route::put('/perbaikan/{id}/manager', [PerbaikanController::class, 'setujuManager'])->name('patrol.setuju.manager');
+		Route::put('/patrol/{id}/manager/tolak', [PerbaikanController::class, 'batalManager'])->name('patrol.batal.manager');
+		Route::put('/perbaikan/{id}/manager/tolak', [PerbaikanController::class, 'tolakManager'])->name('patrol.tolak.manager');
 		Route::get('laporan', ['as' => 'laporan.index', 'uses' => 'App\Http\Controllers\LaporanController@index']);
 		Route::get('download-pdf/{id}', [LaporanController::class, 'downloadPDF'])->name('download.pdf');
 		Route::get('download-excel/{id}', [LaporanController::class, 'downloadExcel'])->name('download.excel');

@@ -13,7 +13,7 @@ class PerbaikanController extends Controller
 {
     public function index(Request $request)
     {
-        $limit = $request->input('limit', 10);  // Default pagination limit
+        $limit = $request->input('limit', 10);
         $search = $request->search;
 
         // Pemetaan nama bulan ke angka
@@ -24,7 +24,6 @@ class PerbaikanController extends Controller
             'oktober' => '10', 'november' => '11', 'desember' => '12',
         ];
 
-        // Cek apakah pencarian mengandung nama bulan
         $bulan = null;
         if ($search) {
             $searchLower = strtolower($search);
@@ -32,10 +31,16 @@ class PerbaikanController extends Controller
                 $bulan = $bulanMap[$searchLower];
             }
         }
+
+        // Cek role pengguna
         if (auth()->user()->role_id == 3) {
-            $patrol = Patrol::where('user_id', auth()->user()->user_id);
-            // dd($patrol);
-            $data = Perbaikan::where('patrol_id', $patrol->patrol_id);
+            $patrol = Patrol::where('user_id', auth()->user()->user_id)->first(); // Ambil 1 record
+
+            if ($patrol) {
+                $data = Perbaikan::where('patrol_id', $patrol->patrol_id);
+            } else {
+                $data = Perbaikan::whereRaw('1 = 0'); // Query kosong
+            }
         } else {
             $data = Perbaikan::query();
         }
@@ -44,14 +49,14 @@ class PerbaikanController extends Controller
         if ($search) {
             $data->where(function ($q) use ($search, $bulan) {
                 if ($bulan) {
-                    $q->orWhereMonth('tanggal', $bulan); // Cari berdasarkan bulan
+                    $q->orWhereMonth('tanggal', $bulan);
                 }
                 $q->orWhere('status', 'like', "%{$search}%")
                 ->orWhere('keterangan', 'like', "%{$search}%")
                 ->orWhere('perbaikan', 'like', "%{$search}%")
                 ->orWhere('target', 'like', "%{$search}%");
             });
-        }        
+        }
 
         // Terapkan sorting
         $sortBy = $request->get('sort_by', 'perbaikan_id');
@@ -60,17 +65,16 @@ class PerbaikanController extends Controller
 
         // Pagination atau semua data
         if ($limit == 'all') {
-            $data = $data->get();  // Ambil semua data
+            $data = $data->get(); // Ambil semua data
         } else {
-            $data = $data->paginate($limit)->appends($request->only('search', 'limit', 'sort_by', 'order')); // Tambahkan query params
+            $data = $data->paginate($limit)->appends($request->only('search', 'limit', 'sort_by', 'order'));
         }
 
         $divisi = Divisi::all();
         $user = User::all();
         $apar = Patrol::all();
 
-        // Kirim data ke view
-        return view('admin.perbaikan.index', compact('data', 'apar' ,'user', 'divisi', 'sortBy', 'order'));
+        return view('admin.perbaikan.index', compact('data', 'apar', 'user', 'divisi', 'sortBy', 'order'));
     }
 
 

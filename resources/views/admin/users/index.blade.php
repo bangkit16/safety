@@ -326,7 +326,7 @@
             adduserModal.show();
         }
         if (
-            {{ $errors->has('edit_user_name') || $errors->has('edit_role_id') ? 'true' : 'false' }}
+            {{ $errors->has('edit_name') || $errors->has('edit_role_id') ? 'true' : 'false' }}
         ) {
             var edituserModal = new bootstrap.Modal(document.getElementById('editUser'));
             var url = localStorage.getItem('Url');

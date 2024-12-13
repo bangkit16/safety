@@ -159,7 +159,7 @@
                             <label for="divisi_id" class="col-form-label">Name Divisi:</label>
                             <select name="divisi_id" id="divisi_id"
                                 class="form-control{{ $errors->has('divisi_id') ? ' is-invalid' : '' }}"
-                                style="height: 50px">
+                                style="height: 50px; ">
                                 <option value="">- Select Divisi -</option>
                                 @foreach ($divisi as $r)
                                     <option value="{{ $r->divisi_id }}"
@@ -289,7 +289,7 @@
                             <label for="temuan-patrol-id" class="col-form-label">Tanggal Patroli: </label>
                             <select name="temuan_patrol_id"
                                 class="form-control {{ $errors->has('temuan_patrol_id') ? ' is-invalid' : '' }}"
-                                id="temuan-patrol-id" style="height: 50px">
+                                id="temuan-patrol-id" style="height: 50px; pointer-events: none; background-color: #e9ecef;">
                                 <option value="">- Tanggal -</option>
                                 @foreach ($data as $p)
                                     <option value="{{ $p->patrol_id }}"
@@ -310,7 +310,7 @@
                             <label for="temuan-divisi-id" class="col-form-label">Name Divisi: </label>
                             <select name="temuan_divisi_id"
                                 class="form-control {{ $errors->has('temuan_divisi_id') ? ' is-invalid' : '' }}"
-                                id="temuan-divisi-id" style="height: 50px">
+                                id="temuan-divisi-id" style="height: 50px; pointer-events: none; background-color: #e9ecef;">
                                 <option value="">- Divisi -</option>
                                 @foreach ($divisi as $p)
                                     <option value="{{ $p->divisi_id }}"
@@ -331,7 +331,7 @@
                             <label for="temuan-user-id" class="col-form-label">Name user: </label>
                             <select name="temuan_user_id"
                                 class="form-control {{ $errors->has('temuan_user_id') ? ' is-invalid' : '' }}"
-                                id="temuan-user-id" style="height: 50px">
+                                id="temuan-user-id" style="height: 50px; pointer-events: none; background-color: #e9ecef;">
                                 <option value="">- User -</option>
                                 @foreach ($user as $p)
                                     <option value="{{ $p->user_id }}"

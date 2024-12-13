@@ -157,15 +157,15 @@
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
-                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id) }}">Edit</a>
+                                                                    data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
                                                                 <a class="dropdown-item admin-button" data-bs-toggle="modal"
                                                                     data-bs-target="#approveadmin"
-                                                                    data-url="{{ url('patrol/' . $d->patrol_id . '/admin') }}">
+                                                                    data-url="{{ url('patrol/' . $d->perbaikan_id . '/admin') }}">
                                                                     Setuju Admin
                                                                 </a>
                                                                 <a class="dropdown-item admin-tolak" data-bs-toggle="modal"
                                                                     data-bs-target="#tolakadmin"
-                                                                    data-url="{{ url('patrol/' . $d->patrol_id . '/admin/tolak') }}">
+                                                                    data-url="{{ url('patrol/' . $d->perbaikan_id . '/admin/tolak') }}">
                                                                     Tolak Admin
                                                                 </a>
                                                             @endif
@@ -189,17 +189,17 @@
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
-                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id) }}">Edit</a>
+                                                                    data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
                                                             @endif
                                                             @if (auth()->user()->role_id == 2)
                                                                 <a class="dropdown-item manager-button" data-bs-toggle="modal"
                                                                     data-bs-target="#approvemanager"
-                                                                    data-url="{{ url('patrol/' . $d->patrol_id . '/manager') }}">
+                                                                    data-url="{{ url('patrol/' . $d->perbaikan_id . '/manager') }}">
                                                                     Setuju Management
                                                                 </a>
                                                                 <a class="dropdown-item manager-tolak" data-bs-toggle="modal"
                                                                     data-bs-target="#tolakmanager"
-                                                                    data-url="{{ url('patrol/' . $d->patrol_id . '/manager/tolak') }}">
+                                                                    data-url="{{ url('patrol/' . $d->perbaikan_id . '/manager/tolak') }}">
                                                                     Tolak Management
                                                                 </a>
                                                             @endif
@@ -223,7 +223,7 @@
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
-                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id) }}">Edit</a>
+                                                                    data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
                                                                 <a class="dropdown-item perbaikan-button" data-bs-toggle="modal"
                                                                     data-bs-target="#addperbaikan"
                                                                     data-id="{{ $d->perbaikan_id }}"
@@ -263,7 +263,7 @@
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
-                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id) }}">Edit</a>
+                                                                    data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
                                                                 <a class="dropdown-item dokum-button" data-bs-toggle="modal"
                                                                     data-bs-target="#dokumModal" data-id="{{ $d->perbaikan_id }}"
                                                                     data-perbaikan="{{ $d->perbaikan }}"
@@ -306,15 +306,15 @@
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
-                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id) }}">Edit</a>
+                                                                    data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
                                                                 <a class="dropdown-item admin-setuju" data-bs-toggle="modal"
                                                                     data-bs-target="#setujuadmin"
-                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id . '/admin') }}">
+                                                                    data-url="{{ url('perbaikan/' . $d->perbaikan_id . '/admin') }}">
                                                                     Approve Admin
                                                                 </a>
                                                                 <a class="dropdown-item admin-batal" data-bs-toggle="modal"
                                                                     data-bs-target="#bataladmin"
-                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id . '/admin/tolak') }}">
+                                                                    data-url="{{ url('perbaikan/' . $d->perbaikan_id . '/admin/tolak') }}">
                                                                     Batal Admin
                                                                 </a>
                                                             @endif
@@ -339,17 +339,17 @@
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
-                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id) }}">Edit</a>
+                                                                    data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
                                                             @endif
                                                             @if (auth()->user()->role_id == 2)
                                                                 <a class="dropdown-item manager-setuju" data-bs-toggle="modal"
                                                                     data-bs-target="#setujumanager"
-                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id . '/manager') }}">
+                                                                    data-url="{{ url('perbaikan/' . $d->perbaikan_id . '/manager') }}">
                                                                     Approve Management
                                                                 </a>
                                                                 <a class="dropdown-item manager-batal" data-bs-toggle="modal"
                                                                     data-bs-target="#batalmanager"
-                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id . '/manager/tolak') }}">
+                                                                    data-url="{{ url('perbaikan/' . $d->perbaikan_id . '/manager/tolak') }}">
                                                                     Batal Management
                                                                 </a>
                                                             @endif
@@ -374,7 +374,7 @@
                                                                     data-perbaikan="{{ $d->perbaikan }}"
                                                                     data-dokumentasi="{{ $d->dokumentasi ? asset('storage/' . $d->dokumentasi) : '' }}"
                                                                     data-tanggal="{{ $d->target }}"
-                                                                    data-url="{{ url('perbaikan/' . $d->patrol_id) }}">Edit</a>
+                                                                    data-url="{{ url('perbaikan/' . $d->perbaikan_id) }}">Edit</a>
                                                             @endif
                                                         @break
 

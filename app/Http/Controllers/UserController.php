@@ -83,6 +83,7 @@ class UserController extends Controller
     public function update(Request $request, $id) {
         $request->validate([
             'edit_name'    => 'required|string|max:255',
+            'edit_email' => 'required|email',
             'edit_role_id'    => 'required|exists:roles,role_id',
         ]);
 
@@ -90,6 +91,7 @@ class UserController extends Controller
 
         $user->update([
             'name' =>$request->edit_name,
+            'email' =>$request->edit_email,
             'role_id'   => $request->edit_role_id,
             'updated_at'     => now(),
         ]);

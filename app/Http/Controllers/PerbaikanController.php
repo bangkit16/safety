@@ -203,35 +203,43 @@ class PerbaikanController extends Controller
 
 
     public function dokumentasi(Request $request, $id)
-    {
-        // Validasi input
-        $request->validate([
-            'dokum_dokumentasi' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-        $perbaikan = Perbaikan::findOrFail($id);
-            // Simpan file baru
-            $filePath = $request->file('dokum_dokumentasi')->store('perbaikan', 'public');
-            $perbaikan->update([
-                'dokumentasi' => $filePath,
-                'status' => 'Selesai',
-                'updated_at' => now(),
-            ]);
+{
+    // Validasi input
+    $request->validate([
+        'dokum_dokumentasi' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
 
-            $details = [
-                'tanggal' => now()->toDateTimeString(),
-                'status' => 'Selesai',
-            ];
-    
-            $user = User::all(); 
-            
-            foreach ($user as $us) {
-                if ($us->role_id == 1 ) {
-                    \Mail::to($us->email)->send(new \App\Mail\NotifyEmail4($details));
-                }
-            }
+    $perbaikan = Perbaikan::findOrFail($id);
 
-        return redirect()->route('perbaikan.index')->withStatus(__('Dokumentasi berhasil ditambahkan.'));
+    // Hapus file lama jika ada
+    if ($perbaikan->dokumentasi && Storage::disk('public')->exists($perbaikan->dokumentasi)) {
+        Storage::disk('public')->delete($perbaikan->dokumentasi);
     }
+
+    // Simpan file baru
+    $filePath = $request->file('dokum_dokumentasi')->store('perbaikan', 'public');
+    $perbaikan->update([
+        'dokumentasi' => $filePath,
+        'status' => 'Selesai',
+        'updated_at' => now(),
+    ]);
+
+    // Kirim email ke admin
+    $details = [
+        'tanggal' => now()->toDateTimeString(),
+        'status' => 'Selesai',
+    ];
+
+    $user = User::all();
+    foreach ($user as $us) {
+        if ($us->role_id == 1) {
+            \Mail::to($us->email)->send(new \App\Mail\NotifyEmail4($details));
+        }
+    }
+
+    return redirect()->route('perbaikan.index')->withStatus(__('Dokumentasi berhasil ditambahkan.'));
+}
+
 
     public function approveAdmin($id)
     {

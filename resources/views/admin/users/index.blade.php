@@ -254,6 +254,19 @@
                             @endif
                         </div>
 
+                        <!-- Name User -->
+                        <div class="form-group{{ $errors->has('edit_email') ? ' has-danger' : '' }}">
+                            <label for="edit-email" class="col-form-label">Email User: </label>
+                            <input type="email" name="edit_email" id="edit-email"
+                                class="form-control{{ $errors->has('edit_email') ? ' is-invalid' : '' }}"
+                                placeholder="Email" value="{{ old('edit_email') }}">
+                            @if ($errors->has('edit_email'))
+                                <span class="invalid-feedback" role="alert">
+                                    {{ $errors->first('edit_email') }}
+                                </span>
+                            @endif
+                        </div>
+
                         <!-- Role User -->
                         <div class="form-group{{ $errors->has('edit_role_id') ? ' has-danger' : '' }}">
                             <label for="edit-role-id" class="col-form-label">Name Role: </label>
@@ -346,6 +359,7 @@
                 var userId = this.getAttribute('data-id');
                 var userName = this.getAttribute('data-name');
                 var userRole = this.getAttribute('data-role');
+                var userEmail = this.getAttribute('data-email');
                 var actionUrl = this.getAttribute('data-url');
                 localStorage.setItem('Url', actionUrl);
 
@@ -353,6 +367,7 @@
 
                 $('#edit-id').val(userId);
                 $('#edit-name').val(userName);
+                $('#edit-email').val(userEmail);
                 $('#edit-role-id').val(userRole);
 
                 // Atur action form untuk update

@@ -383,7 +383,7 @@
                                 <label for="patrol_id" class="col-form-label">Tanggal Patroli:</label>
                                 <select name="patrol_id" id="patrol_id"
                                     class="form-control{{ $errors->has('patrol_id') ? ' is-invalid' : '' }}"
-                                    style="height: 50px">
+                                    style="height: 50px; pointer-events: none; background-color: #e9ecef;">
                                     <option value="">- Select Patrol -</option>
                                     @foreach ($apar as $r)
                                         <option value="{{ $r->patrol_id }}"

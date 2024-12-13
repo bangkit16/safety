@@ -72,7 +72,7 @@
                             <li @if ($pageSlug == 'input-perbaikan') class="active " @endif>
                                 <a href="{{ route('perbaikan.index') }}">
                                     <i class="fas fa-tools"></i> <!-- Ikon Input Perbaikan -->
-                                    <p>{{ 'Input Perbaikan' }}</p>
+                                    <p>{{ 'Temuan dan Perbaikan' }}</p>
                                 </a>
                             </li>
                             <li @if ($pageSlug == 'laporan') class="active " @endif>

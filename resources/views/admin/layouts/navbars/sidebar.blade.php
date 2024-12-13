@@ -62,7 +62,7 @@
                 <div class="collapse {{ in_array($pageSlug, ['input-patrol', 'input-perbaikan', 'laporan']) ? 'show' : '' }}"
                     id="patrol">
                     <ul class="nav pl-4">
-                        @if (auth()->user()->role_id == 1 || auth()->user()->role_id == 3)
+                        @if (auth()->user()->role_id == 1 || auth()->user()->role_id == 2 || auth()->user()->role_id == 3)
                             <li @if ($pageSlug == 'input-patrol') class="active " @endif>
                                 <a href="{{ route('patrol.index') }}">
                                     <i class="fas fa-pencil-alt"></i> <!-- Ikon Input Patrol -->
@@ -75,8 +75,6 @@
                                     <p>{{ 'Input Perbaikan' }}</p>
                                 </a>
                             </li>
-                        @endif
-                        @if (auth()->user()->role_id == 1 || auth()->user()->role_id == 2)
                             <li @if ($pageSlug == 'laporan') class="active " @endif>
                                 <a href="{{ route('laporan.index') }}">
                                     <i class="fas fa-file-alt"></i> <!-- Ikon Laporan Patrol -->

@@ -52,7 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::put('/perbaikan/dokumentasi/{id}', [PerbaikanController::class, 'dokumentasi'])->name('perbaikan.dokumentasi');
 	});
 
-	Route::group(['middleware' => ['role:1,2,3']], function () {		
+	Route::group(['middleware' => ['role:1,2,3,4']], function () {		
 		Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
 		Route::put('profile/{id}', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
 		Route::put('profile/password/{id}', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);

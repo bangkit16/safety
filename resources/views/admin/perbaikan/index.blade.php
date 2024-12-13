@@ -405,7 +405,7 @@
                             <div class="">
                                 <label for="keterangan" class="col-form-label">Keterangan Temuan: </label>
                                 <textarea type="text" name="keterangan" id="keterangan"
-                                    class="form-control{{ $errors->has('keterangan') ? ' is-invalid' : '' }}" placeholder="Description Feedback">{{ old('keterangan') }}</textarea>
+                                    class="form-control{{ $errors->has('keterangan') ? ' is-invalid' : '' }}" placeholder="Description Feedback" readonly>{{ old('keterangan') }}</textarea>
                                 @if ($errors->has('keterangan'))
                                     <span class="invalid-feedback" role="alert">
                                         {{ $errors->first('keterangan') }}

@@ -8,11 +8,10 @@
     <div class="col-lg-4 col-md-6 ml-auto mr-auto">
         <form class="form" method="post" action="{{ route('login') }}">
             @csrf
-
-            <div class="card card-login card-white">
+            <div class="card ">
                 <div class="card-header">
-                    <img src="{{ asset('white') }}/img/card-primary.png" alt="">
-                    <h1 class="card-title ">{{ 'Log in' }}</h1>
+                    {{-- <img src="{{ asset('white') }}/img/card-primary.png" alt=""> --}}
+                    <h2 class="text-center text-black mt-5 font-bold">{{ 'Login' }}</h2>
                 </div>
                 <div class="card-body mt-5">
                     <div class="input-group{{ $errors->has('email') ? ' has-danger' : '' }}">

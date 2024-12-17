@@ -3,5 +3,5 @@
 @endauth
 
 @guest()
-    {{-- @include('admin.layouts.navbars.navs.guest') --}}
+    @include('admin.layouts.navbars.navs.guest')
 @endguest

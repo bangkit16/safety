@@ -8,7 +8,7 @@
                     <div class="col-lg-5 col-md-6">
                         <h1 class="text-dark">{{ ('Welcome!') }}</h1>
                         <p class="text-lead text-dark">
-                            {{ ('Use White Dashboard theme to create a great project.') }}
+                            {{ ('Selamat Datang di Halaman Safety-Patrol Safe Guard.') }}
                         </p>
                     </div>
                 </div>

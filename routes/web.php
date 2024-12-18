@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('guest');
 
 Auth::routes();
 Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home')->middleware('auth');

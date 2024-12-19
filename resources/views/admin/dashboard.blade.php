@@ -14,7 +14,7 @@
                 </div>
                 <div class="card-body">
                     <div class="chart">
-                        {{-- Tempat untuk menampilkan grafik --}}
+                        Tempat untuk menampilkan grafik
                         {!! $chart->container() !!}
                     </div>
                 </div>
@@ -22,8 +22,7 @@
         </div>
     </div>
 @endsection
-
 @push('js')
+{{ $chart->script() }}
     <script src="{{ $chart->cdn() }}"></script>
-    {{ $chart->script() }}
 @endpush
